@@ -1,7 +1,7 @@
 package main;
 
-import frontend.SignInServlet;
-import frontend.SignUpServlet;
+import frontend.LoginServlet;
+import frontend.SignupServlet;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -18,17 +18,16 @@ public class Main {
             String portString = args[0];
             port = Integer.valueOf(portString);
         }
-
         System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
 
         AccountService accountService = new AccountService();
 
-        Servlet signin = new SignInServlet(accountService);
-        Servlet signUp = new SignUpServlet(accountService);
+        Servlet login = new LoginServlet(accountService);
+        Servlet signup = new SignupServlet(accountService);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(signin), "/api/v1/auth/signin");
-        context.addServlet(new ServletHolder(signUp), "/api/v1/auth/signup");
+        context.addServlet(new ServletHolder(login), "/login/");
+        context.addServlet(new ServletHolder(signup), "/signup/");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
