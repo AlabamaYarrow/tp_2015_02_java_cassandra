@@ -1,7 +1,9 @@
 # Cassandra
 
 Institution: Технопарк@Mail.ru
+
 Course: Углубленное программирование на Java
+
 Term: весенний семестр 2015 г.
 
 ## Developers
