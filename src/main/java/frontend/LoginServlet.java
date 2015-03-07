@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author v.chibrikov
- */
 public class LoginServlet extends HttpServlet {
-    private AccountService accountService;
+    static final String TEMPLATE = "login.ftl";
+    static final String ERROR_MESSAGE = "Incorrect username or password.";
+
+    AccountService accountService;
 
     public LoginServlet(AccountService accountService) {
         this.accountService = accountService;
@@ -24,33 +24,52 @@ public class LoginServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String password = request.getParameter("password");
-
-        response.setStatus(HttpServletResponse.SC_OK);
-
         Map<String, Object> pageVariables = new HashMap<>();
-        UserProfile profile = accountService.getUser(name);
-        if (profile != null && profile.getPassword().equals(password)) {
-            pageVariables.put("loginStatus", "Login passed");
-        } else {
-            pageVariables.put("loginStatus", "Wrong login/password");
+
+        UserProfile user = this.accountService.getUser(request.getSession().getId());
+        if (null != user) {
+            pageVariables.put("user", user);
         }
 
-        response.getWriter().println(PageGenerator.getPage("authstatus.html", pageVariables));
+        response.getWriter().println(PageGenerator.getPage(LoginServlet.TEMPLATE, pageVariables));
     }
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-
-        response.setStatus(HttpServletResponse.SC_OK);
-
         Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("email", email == null ? "" : email);
-        pageVariables.put("password", password == null ? "" : password);
 
-        response.getWriter().println(PageGenerator.getPage("authresponse.txt", pageVariables));
+        String sid = request.getSession().getId();
+        UserProfile user = this.accountService.getUser(sid);
+        if (null != user) {
+            pageVariables.put("user", user);
+        } else {
+            boolean isValid = true;
+
+            String login = request.getParameter("login");
+            pageVariables.put("login", login);
+            if (0 == login.length()) {
+                pageVariables.put("login_error", "Login is strictly required field.");
+                isValid = false;
+            }
+
+            String password = request.getParameter("password");
+            pageVariables.put("password", password);
+            if (0 == password.length()) {
+                pageVariables.put("password_error", "Password is required field.");
+                isValid = false;
+            }
+
+            if (isValid) {
+                UserProfile loggedInUser = this.accountService.getUserByLogin(login);
+                if (null == loggedInUser || !loggedInUser.checkPassword(password)) {
+                    pageVariables.put("login_procedure_error", LoginServlet.ERROR_MESSAGE);
+                } else {
+                    accountService.login(sid, loggedInUser);
+                    pageVariables.put("logged_in_user", loggedInUser);
+                }
+            }
+        }
+
+        response.getWriter().println(PageGenerator.getPage(LoginServlet.TEMPLATE, pageVariables));
     }
 }

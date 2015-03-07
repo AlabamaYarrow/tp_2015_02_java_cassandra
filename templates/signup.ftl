@@ -12,9 +12,11 @@
 <h2>Sign Up</h2>
 
 <#if user??>
-<p>Congratulations, ${user.getLogin()}, you're succesfully registered.</p>
+<p>Before signing up you need to <a href="/logout/">logout</a> from ${user.getLogin()}.</p>
+<#elseif new_user??>
+<p>Congratulations, ${new_user.getLogin()}, you're succesfully registered.</p>
 
-<p>Now you can go to your <a href="/profile/">profile</a> page or <a href="/logout/">logout.</a></p>
+<p>Now you can <a href="/login/">log in.</a></p>
 <#else>
 <form method="post">
 <p>

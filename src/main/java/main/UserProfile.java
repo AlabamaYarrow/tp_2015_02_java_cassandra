@@ -1,8 +1,5 @@
 package main;
 
-/**
- * Created by v.chibrikov on 13.09.2014.
- */
 public class UserProfile {
     private String login;
     private String password;
@@ -14,12 +11,12 @@ public class UserProfile {
         this.email = email;
     }
 
-    public String getLogin() {
-        return login;
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 
-    public String getPassword() {
-        return password;
+    public String getLogin() {
+        return login;
     }
 
     public String getEmail() {

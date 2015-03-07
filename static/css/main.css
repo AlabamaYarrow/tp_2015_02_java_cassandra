@@ -92,11 +92,11 @@ input[type=submit] {
 .error {
     color: #800;
     font-weight: bolder;
-    line-height: .95;
     margin: .7em 0;
 }
 
 /* In-field error. */
 p > .error {
     margin: -.4em 0 0 5.5em;
+    line-height: .95;
 }

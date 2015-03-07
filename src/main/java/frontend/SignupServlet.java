@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by v.chibrikov on 13.09.2014.
- */
 public class SignupServlet extends HttpServlet {
     static final String TEMPLATE = "signup.ftl";
 
@@ -26,49 +23,61 @@ public class SignupServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().println(PageGenerator.getPage(SignupServlet.TEMPLATE));
+        Map<String, Object> pageVariables = new HashMap<>();
+
+        UserProfile user = this.accountService.getUser(request.getSession().getId());
+        if (null != user) {
+            pageVariables.put("user", user);
+        }
+
+        response.getWriter().println(PageGenerator.getPage(SignupServlet.TEMPLATE, pageVariables));
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> pageVariables = new HashMap<>();
-        boolean isValid = true;
+        UserProfile user = this.accountService.getUser(request.getSession().getId());
+        if (null != user) {
+            pageVariables.put("user", user);
+        } else {
+            boolean isValid = true;
 
-        String login = request.getParameter("login");
-        pageVariables.put("login", login);
-        if (0 == login.length()) {
-            pageVariables.put("login_error", "Login is strictly required field.");
-            isValid = false;
-        }
+            String login = request.getParameter("login");
+            pageVariables.put("login", login);
+            if (0 == login.length()) {
+                pageVariables.put("login_error", "Login is strictly required field.");
+                isValid = false;
+            }
 
-        String email = request.getParameter("email");
-        pageVariables.put("email", email);
-        if (0 == email.length()) {
-            pageVariables.put("email_error", "Email is required field.");
-            isValid = false;
-        }
+            String email = request.getParameter("email");
+            pageVariables.put("email", email);
+            if (0 == email.length()) {
+                pageVariables.put("email_error", "Email is required field.");
+                isValid = false;
+            }
 
-        String password = request.getParameter("password");
-        pageVariables.put("password", password);
-        if (0 == password.length()) {
-            pageVariables.put("password_error", "Password is required field.");
-            isValid = false;
-        }
+            String password = request.getParameter("password");
+            pageVariables.put("password", password);
+            if (0 == password.length()) {
+                pageVariables.put("password_error", "Password is required field.");
+                isValid = false;
+            }
 
-        String passwordConfirmation = request.getParameter("password_confirmation");
-        pageVariables.put("password_confirmation", passwordConfirmation);
-        if (!password.equals(passwordConfirmation)) {
-            pageVariables.put("password_confirmation_error", "Passwords don't match.");
-            isValid = false;
-        }
+            String passwordConfirmation = request.getParameter("password_confirmation");
+            pageVariables.put("password_confirmation", passwordConfirmation);
+            if (!password.equals(passwordConfirmation)) {
+                pageVariables.put("password_confirmation_error", "Passwords don't match.");
+                isValid = false;
+            }
 
-        if (isValid) {
-            UserProfile user = new UserProfile(login, password, "");
-            if (accountService.addUser(login, user)) {
-                pageVariables.put("user", user);
-            } else {
-                pageVariables.put("signup_error", "User with name " + login + " already exists.");
+            if (isValid) {
+                UserProfile newUser = new UserProfile(login, password, "");
+                if (accountService.addUser(login, newUser)) {
+                    pageVariables.put("new_user", newUser);
+                } else {
+                    pageVariables.put("signup_error", "User with name " + login + " already exists.");
+                }
             }
         }
 
