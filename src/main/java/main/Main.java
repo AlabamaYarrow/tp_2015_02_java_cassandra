@@ -1,9 +1,6 @@
 package main;
 
-import frontend.LoginServlet;
-import frontend.LogoutServlet;
-import frontend.ProfileServlet;
-import frontend.SignupServlet;
+import frontend.*;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -24,12 +21,14 @@ public class Main {
 
         AccountService accountService = new AccountService();
 
+        Servlet admin = new AdminServlet(accountService);
         Servlet login = new LoginServlet(accountService);
         Servlet logout = new LogoutServlet(accountService);
         Servlet profile = new ProfileServlet(accountService);
         Servlet signup = new SignupServlet(accountService);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addServlet(new ServletHolder(admin), "/admin/");
         context.addServlet(new ServletHolder(login), "/login/");
         context.addServlet(new ServletHolder(logout), "/logout/");
         context.addServlet(new ServletHolder(profile), "/profile/");

@@ -27,6 +27,14 @@ public class AccountService {
         return users.get(login);
     }
 
+    public long getUsersCount() {
+        return this.users.size();
+    }
+
+    public long getOnlineCount() {
+        return this.sessions.size();
+    }
+
     public UserProfile getUser(String sid) {
         return this.sessions.get(sid);
     }
