@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PageGenerator {
@@ -23,5 +24,9 @@ public class PageGenerator {
             e.printStackTrace();
         }
         return stream.toString();
+    }
+
+    public static String getPage(String filename) {
+        return PageGenerator.getPage(filename, new HashMap<String, Object>());
     }
 }
