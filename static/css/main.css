@@ -71,7 +71,7 @@ a:link > h1, a:visited > h1 {
     color: #000;
 }
 
-label {
+label, .label {
     display: inline-block;
     width: 5em;
     text-align: right;

@@ -38,6 +38,7 @@
         <input type="submit" value="Login">
     </p>
 </form>
+<p>If you have no account, <a href="/signup/">Sign Up.</a></p>
 </#if>
 </body>
 </html>

@@ -72,7 +72,7 @@ public class SignupServlet extends HttpServlet {
             }
 
             if (isValid) {
-                UserProfile newUser = new UserProfile(login, password, "");
+                UserProfile newUser = new UserProfile(login, password, email);
                 if (accountService.addUser(login, newUser)) {
                     pageVariables.put("new_user", newUser);
                 } else {
