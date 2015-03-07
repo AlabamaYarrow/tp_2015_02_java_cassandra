@@ -19,6 +19,10 @@ public class AccountService {
         sessions.put(sessionId, userProfile);
     }
 
+    public void logout(String sessionId) {
+        sessions.remove(sessionId);
+    }
+
     public UserProfile getUserByLogin(String login) {
         return users.get(login);
     }
