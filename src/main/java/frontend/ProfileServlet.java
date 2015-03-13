@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileServlet extends HttpServlet {
-    static final String TEMPLATE = "profile.ftl";
+    protected static final String TEMPLATE = "profile.ftl";
 
-    AccountService accountService;
+    protected AccountService accountService;
 
     public ProfileServlet(AccountService accountService) {
         this.accountService = accountService;

@@ -11,8 +11,8 @@ import java.io.Writer;
 import java.util.Map;
 
 public class PageGenerator {
-    static final String HTML_DIR = "templates";
-    static final Configuration CFG = new Configuration();
+    protected static final String HTML_DIR = "templates";
+    protected static final Configuration CFG = new Configuration();
 
     public static String getPage(String filename, Map<String, Object> data) {
         Writer stream = new StringWriter();

@@ -1,9 +1,9 @@
 package main;
 
 public class UserProfile {
-    private String login;
-    private String password;
-    private String email;
+    protected String login;
+    protected String password;
+    protected String email;
 
     public UserProfile(String login, String password, String email) {
         this.login = login;

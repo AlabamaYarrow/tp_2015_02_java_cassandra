@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignupServlet extends HttpServlet {
-    static final String TEMPLATE = "signup.ftl";
+    protected static final String TEMPLATE = "signup.ftl";
 
-    AccountService accountService;
+    protected AccountService accountService;
 
     public SignupServlet(AccountService accountService) {
         this.accountService = accountService;
@@ -45,21 +45,21 @@ public class SignupServlet extends HttpServlet {
 
             String login = request.getParameter("login");
             pageVariables.put("login", login);
-            if (0 == login.length()) {
+            if (login.isEmpty()) {
                 pageVariables.put("login_error", "Login is strictly required field.");
                 isValid = false;
             }
 
             String email = request.getParameter("email");
             pageVariables.put("email", email);
-            if (0 == email.length()) {
+            if (email.isEmpty()) {
                 pageVariables.put("email_error", "Email is required field.");
                 isValid = false;
             }
 
             String password = request.getParameter("password");
             pageVariables.put("password", password);
-            if (0 == password.length()) {
+            if (password.isEmpty()) {
                 pageVariables.put("password_error", "Password is required field.");
                 isValid = false;
             }
