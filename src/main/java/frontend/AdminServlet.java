@@ -16,9 +16,9 @@ import java.util.TimerTask;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class AdminServlet extends HttpServlet {
-    static final String TEMPLATE = "admin.ftl";
+    protected static final String TEMPLATE = "admin.ftl";
 
-    AccountService accountService;
+    protected AccountService accountService;
 
     public AdminServlet(AccountService accountService) {
         this.accountService = accountService;

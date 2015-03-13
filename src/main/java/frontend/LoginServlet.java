@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginServlet extends HttpServlet {
-    static final String TEMPLATE = "login.ftl";
-    static final String ERROR_MESSAGE = "Incorrect username or password.";
+    protected static final String TEMPLATE = "login.ftl";
+    protected static final String ERROR_MESSAGE = "Incorrect username or password.";
 
-    AccountService accountService;
+    protected final AccountService accountService;
 
     public LoginServlet(AccountService accountService) {
         this.accountService = accountService;

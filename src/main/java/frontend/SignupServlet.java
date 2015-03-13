@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignupServlet extends HttpServlet {
-    static final String TEMPLATE = "signup.ftl";
+    protected static final String TEMPLATE = "signup.ftl";
 
-    AccountService accountService;
+    protected AccountService accountService;
 
     public SignupServlet(AccountService accountService) {
         this.accountService = accountService;
