@@ -15,7 +15,7 @@ import java.util.Map;
 public class LogoutServlet extends HttpServlet {
     protected static final String TEMPLATE = "logout.ftl";
 
-    protected AccountService accountService;
+    protected final AccountService accountService;
 
     public LogoutServlet(AccountService accountService) {
         this.accountService = accountService;

@@ -15,7 +15,7 @@ import java.util.Map;
 public class SignupServlet extends HttpServlet {
     protected static final String TEMPLATE = "signup.ftl";
 
-    protected AccountService accountService;
+    protected final AccountService accountService;
 
     public SignupServlet(AccountService accountService) {
         this.accountService = accountService;
@@ -44,31 +44,39 @@ public class SignupServlet extends HttpServlet {
             boolean isValid = true;
 
             String login = request.getParameter("login");
-            pageVariables.put("login", login);
-            if (login.isEmpty()) {
+            if (null == login || login.isEmpty()) {
                 pageVariables.put("login_error", "Login is strictly required field.");
                 isValid = false;
+            } else {
+                pageVariables.put("login", login);
             }
 
             String email = request.getParameter("email");
-            pageVariables.put("email", email);
-            if (email.isEmpty()) {
+            if (null == email || email.isEmpty()) {
                 pageVariables.put("email_error", "Email is required field.");
                 isValid = false;
+            } else {
+                pageVariables.put("email", email);
             }
 
             String password = request.getParameter("password");
-            pageVariables.put("password", password);
-            if (password.isEmpty()) {
+            if (null == password || password.isEmpty()) {
                 pageVariables.put("password_error", "Password is required field.");
                 isValid = false;
+            } else {
+                pageVariables.put("password", password);
             }
 
             String passwordConfirmation = request.getParameter("password_confirmation");
-            pageVariables.put("password_confirmation", passwordConfirmation);
-            if (!password.equals(passwordConfirmation)) {
-                pageVariables.put("password_confirmation_error", "Passwords don't match.");
+            if (null == passwordConfirmation) {
+                pageVariables.put("password_confirmation_error", "Confirm password.");
                 isValid = false;
+            } else {
+                if (null == password || !password.equals(passwordConfirmation)) {
+                    pageVariables.put("password_confirmation_error", "Passwords don't match.");
+                    isValid = false;
+                }
+                pageVariables.put("password_confirmation", passwordConfirmation);
             }
 
             if (isValid) {

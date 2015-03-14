@@ -18,7 +18,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class AdminServlet extends HttpServlet {
     protected static final String TEMPLATE = "admin.ftl";
 
-    protected AccountService accountService;
+    protected final AccountService accountService;
 
     public AdminServlet(AccountService accountService) {
         this.accountService = accountService;
@@ -36,6 +36,14 @@ public class AdminServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
+        int delay;
+        try {
+            delay = Integer.parseInt(request.getParameter("delay"));
+        } catch (NullPointerException | NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
@@ -43,7 +51,7 @@ public class AdminServlet extends HttpServlet {
                 System.exit(0);
             }
         };
-        timer.schedule(task, Integer.parseInt(request.getParameter("delay")));
+        timer.schedule(task, delay);
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("stopping", true);

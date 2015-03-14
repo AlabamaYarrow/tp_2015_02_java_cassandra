@@ -15,7 +15,7 @@ import java.util.Map;
 public class ProfileServlet extends HttpServlet {
     protected static final String TEMPLATE = "profile.ftl";
 
-    protected AccountService accountService;
+    protected final AccountService accountService;
 
     public ProfileServlet(AccountService accountService) {
         this.accountService = accountService;
