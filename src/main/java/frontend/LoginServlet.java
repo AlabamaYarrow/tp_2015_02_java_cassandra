@@ -46,17 +46,19 @@ public class LoginServlet extends HttpServlet {
             boolean isValid = true;
 
             String login = request.getParameter("login");
-            pageVariables.put("login", login);
-            if (login.isEmpty()) {
+            if (null == login || login.isEmpty()) {
                 pageVariables.put("login_error", "Login is strictly required field.");
                 isValid = false;
+            } else {
+                pageVariables.put("login", login);
             }
 
             String password = request.getParameter("password");
-            pageVariables.put("password", password);
-            if (password.isEmpty()) {
+            if (null == password || password.isEmpty()) {
                 pageVariables.put("password_error", "Password is required field.");
                 isValid = false;
+            } else {
+                pageVariables.put("password", password);
             }
 
             if (isValid) {
