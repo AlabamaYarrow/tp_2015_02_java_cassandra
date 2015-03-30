@@ -25,23 +25,23 @@ https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP
 В случае не правильного заполнения необходимых полей метод возвращает статус
 400 и в body содержится информация об ошибках в формате:
 ```javascript
-{  
-  status: 400,  
-  body: {  
-    "name": {  
-      /* Тип ошибки */  
-      "error": "required",  
-      /* Значение, которое валидировал сервер */  
-      "value": ""  
-    },  
-    "password": {  
-      /* Тип ошибки */  
-      "error": "badvalue",  
-      /* Значение, которое валидировал сервер */  
-      /* Если кто-то отдаст пароль, будет писать юнит тесты на модели для проверки отсутствия пароля в ответах сервера ;-) */  
-      "value": ""  
-    }  
-  }  
+{
+  status: 400,
+  body: {
+    "name": {
+      /* Тип ошибки */
+      "error": "required",
+      /* Значение, которое валидировал сервер */
+      "value": ""
+    },
+    "password": {
+      /* Тип ошибки */
+      "error": "badvalue",
+      /* Значение, которое валидировал сервер */
+      /* Если кто-то отдаст пароль, будет писать юнит тесты на модели для проверки отсутствия пароля в ответах сервера ;-) */
+      "value": ""
+    }
+  }
 }
 ```
 
@@ -53,22 +53,22 @@ https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP
 
 ### Пример POST-запроса
 ```javascript
-{  
-    name: String,  
-    email: String,  
-    password: String  
+{
+    name: String,
+    email: String,
+    password: String
 }
 ```
 #### Ответ: 200
 ```javascript
-{  
-    status: 200,  
-    body: {  
-        id: 2,  
-        name: "Vasya",  
-        email: "vasya@mail.ru",  
-        password: ""  
-    }  
+{
+    status: 200,
+    body: {
+        id: 2,
+        name: "Vasya",
+        email: "vasya@mail.ru",
+        password: ""
+    }
 }
 ```
 
@@ -78,22 +78,22 @@ https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP
 
 ### Пример POST-запроса
 ```javascript
-{  
-    email: String,  
-    password: String  
+{
+    email: String,
+    password: String
 }
 ```
 #### Ответ: 200
 ```javascript
-{  
-    status: 200,  
-    body: {  
-        id: 2,  
-        name: "Vasya",  
-        email: "vasya@mail.ru",  
+{
+    status: 200,
+    body: {
+        id: 2,
+        name: "Vasya",
+        email: "vasya@mail.ru",
         password: "",
         score: 100500
-    }  
+    }
 }
 ```
 
@@ -111,10 +111,10 @@ https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP
 Ответ: 200
 ```javascript
 {
-    status: 200,  
+    status: 200,
     body: {
-        id: 2,  
-        name: "Vasya",  
+        id: 2,
+        name: "Vasya",
         email: "vasya@mail.ru",
         score: 100500,
         team: null
@@ -126,23 +126,23 @@ https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP
 Ответ: 200
 ```javascript
 {
-    status: 200,  
+    status: 200,
     body: {
         id: 2
-        name: "Vasya",  
+        name: "Vasya",
         email: "vasya@mail.ru",
         score: 100500,
         team: 13
-    }  
+    }
 }
 ```
 
 #### Пользователь не залогинен
 Ответ: 401
 ```javascript
-{  
-    status: 401,  
-    body: {}  
+{
+    status: 401,
+    body: {}
 }
 ```
 
@@ -152,8 +152,8 @@ https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP
 ### Запрос: POST — без параметров
 #### Ответ: 200 / 401
 ```javascript
-{  
-    status: 200,  
+{
+    status: 200,
     body: {}
 }
 ```
@@ -162,18 +162,18 @@ https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP
     /api/v<НОМЕР_ВЕРСИИ>/scores
 ### Запрос: GET
 ```javascript
-{  
-    sort: {  
-      by: "date",  
-      order: "asc"  
-    }  
+{
+    sort: {
+      by: "date",
+      order: "asc"
+    }
 }
 ```
 #### Ответ: 200 / 401
 ```javascript
-{  
-    status: 200,  
-    body: {}  
+{
+    status: 200,
+    body: {}
 }
 ```
 
