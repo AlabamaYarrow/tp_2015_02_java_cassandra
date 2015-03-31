@@ -69,8 +69,7 @@
     body: {
         id: 2,
         name: "Vasya",
-        email: "vasya@mail.ru",
-        password: ""
+        email: "vasya@mail.ru"
     }
 }
 ```
@@ -99,7 +98,6 @@
         id: 2,
         name: "Vasya",
         email: "vasya@mail.ru",
-        password: "",
         score: 100500
     }
 }
@@ -115,7 +113,7 @@
 
 Ответ сервера будет зависеть от того, в каком игровом состоянии находится пользователь:
 
-#### Ещё не выбрал свою команду
+#### Авторизован
 
 Код ответа: 200
 
@@ -126,25 +124,7 @@
         id: 2,
         name: "Vasya",
         email: "vasya@mail.ru",
-        score: 100500,
-        team: null
-    }
-}
-```
-
-#### Играет в некоторой команде
-
-Код ответа: 200
-
-```javascript
-{
-    status: 200,
-    body: {
-        id: 2
-        name: "Vasya",
-        email: "vasya@mail.ru",
-        score: 100500,
-        team: 13
+        score: 100500
     }
 }
 ```
