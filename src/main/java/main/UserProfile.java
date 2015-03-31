@@ -1,12 +1,12 @@
 package main;
 
 public class UserProfile {
-    protected String login;
+    protected String name;
     protected String password;
     protected String email;
 
-    public UserProfile(String login, String password, String email) {
-        this.login = login;
+    public UserProfile(String name, String password, String email) {
+        this.name = name;
         this.password = password;
         this.email = email;
     }
@@ -15,8 +15,8 @@ public class UserProfile {
         return this.password.equals(password);
     }
 
-    public String getLogin() {
-        return login;
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {

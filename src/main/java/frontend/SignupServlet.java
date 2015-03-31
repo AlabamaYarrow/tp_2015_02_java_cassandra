@@ -2,6 +2,7 @@ package frontend;
 
 import main.AccountService;
 import main.UserProfile;
+import org.json.simple.JSONObject;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -13,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignupServlet extends HttpServlet {
-    protected static final String TEMPLATE = "signup.ftl";
 
     protected final AccountService accountService;
 
@@ -21,34 +21,23 @@ public class SignupServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
-        Map<String, Object> pageVariables = new HashMap<>();
-
-        UserProfile user = this.accountService.getUser(request.getSession().getId());
-        if (null != user) {
-            pageVariables.put("user", user);
-        }
-
-        response.getWriter().println(PageGenerator.getPage(SignupServlet.TEMPLATE, pageVariables));
-        response.setStatus(HttpServletResponse.SC_OK);
-    }
-
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        Map<String, Object> pageVariables = new HashMap<>();
+        JSONObject json = new JSONObject();
         UserProfile user = this.accountService.getUser(request.getSession().getId());
         if (null != user) {
-            pageVariables.put("user", user);
+            json.put("status", HttpServletResponse.SC_FORBIDDEN);
+            json.put("message", "You're already authorized.");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
             boolean isValid = true;
 
-            String login = request.getParameter("login");
+            String login = request.getParameter("name");
             if (null == login || login.isEmpty()) {
                 pageVariables.put("login_error", "Login is strictly required field.");
                 isValid = false;
             } else {
-                pageVariables.put("login", login);
+                pageVariables.put("name", login);
             }
 
             String email = request.getParameter("email");
@@ -89,8 +78,7 @@ public class SignupServlet extends HttpServlet {
             }
         }
 
-        response.getWriter().println(PageGenerator.getPage(SignupServlet.TEMPLATE, pageVariables));
-        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(json.toJSONString());
     }
 
 }

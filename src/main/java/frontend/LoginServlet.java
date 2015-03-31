@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginServlet extends HttpServlet {
-    protected static final String TEMPLATE = "login.ftl";
+    protected static final String TEMPLATE = "name.ftl";
     protected static final String ERROR_MESSAGE = "Incorrect username or password.";
 
     protected final AccountService accountService;
@@ -45,12 +45,12 @@ public class LoginServlet extends HttpServlet {
         } else {
             boolean isValid = true;
 
-            String login = request.getParameter("login");
+            String login = request.getParameter("name");
             if (null == login || login.isEmpty()) {
                 pageVariables.put("login_error", "Login is strictly required field.");
                 isValid = false;
             } else {
-                pageVariables.put("login", login);
+                pageVariables.put("name", login);
             }
 
             String password = request.getParameter("password");
