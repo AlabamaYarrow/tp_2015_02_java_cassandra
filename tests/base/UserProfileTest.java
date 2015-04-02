@@ -34,6 +34,7 @@ public abstract class UserProfileTest extends ServletTest {
         TestCase.assertEquals((long)user.getID(), hydrated.get("id"));
         TestCase.assertEquals(user.getEmail(), hydrated.get("email"));
         TestCase.assertEquals(user.getName(), hydrated.get("name"));
+        TestCase.assertNull(hydrated.get("password"));
         TestCase.assertEquals((long)user.getScore(), hydrated.get("score"));
     }
 
