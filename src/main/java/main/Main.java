@@ -1,5 +1,6 @@
 package main;
 
+import freemarker.template.Configuration;
 import frontend.*;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -23,7 +24,7 @@ public class Main {
 
         AccountService accountService = new AccountService();
 
-        Servlet admin = new AdminServlet(accountService, new PageGenerator(), new Timer());
+        Servlet admin = new AdminServlet(accountService, new PageGenerator("templates", new Configuration()), new Timer());
         Servlet authCheck = new AuthCheckServlet(accountService);
         Servlet signIn = new SignInServlet(accountService);
         Servlet signOut = new SignOutServlet(accountService);

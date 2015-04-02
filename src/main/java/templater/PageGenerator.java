@@ -11,13 +11,19 @@ import java.io.Writer;
 import java.util.Map;
 
 public class PageGenerator {
-    protected static final String HTML_DIR = "templates";
-    protected static final Configuration CFG = new Configuration();
+
+    protected final String TEMPLATES_DIR;
+    protected final Configuration CFG;
+
+    public PageGenerator(String templatesDir, Configuration configuration) {
+        this.TEMPLATES_DIR = templatesDir;
+        this.CFG = configuration;
+    }
 
     public String getPage(String filename, Map<String, Object> data) {
         Writer stream = new StringWriter();
         try {
-            Template template = PageGenerator.CFG.getTemplate(PageGenerator.HTML_DIR + File.separator + filename);
+            Template template = this.CFG.getTemplate(this.TEMPLATES_DIR + File.separator + filename);
             template.process(data, stream);
         } catch (IOException | TemplateException e) {
             e.printStackTrace();
