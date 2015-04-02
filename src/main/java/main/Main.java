@@ -22,6 +22,7 @@ public class Main {
         AccountService accountService = new AccountService();
 
         Servlet admin = new AdminServlet(accountService);
+        Servlet authCheck = new AuthCheckServlet(accountService);
         Servlet profile = new ProfileServlet(accountService);
         Servlet signin = new SigninServlet(accountService);
         Servlet signout = new SignoutServlet(accountService);
@@ -29,6 +30,7 @@ public class Main {
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(admin), "/admin/");
+        context.addServlet(new ServletHolder(authCheck), "/api/v1/auth/check/");
         context.addServlet(new ServletHolder(profile), "/profile/");
         context.addServlet(new ServletHolder(signin), "/api/v1/auth/signin/");
         context.addServlet(new ServletHolder(signout), "/api/v1/auth/signout/");
