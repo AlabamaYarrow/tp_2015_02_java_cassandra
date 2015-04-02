@@ -22,16 +22,16 @@ public class Main {
         AccountService accountService = new AccountService();
 
         Servlet admin = new AdminServlet(accountService);
-        Servlet login = new LoginServlet(accountService);
-        Servlet logout = new LogoutServlet(accountService);
         Servlet profile = new ProfileServlet(accountService);
+        Servlet signin = new SigninServlet(accountService);
+        Servlet signout = new SignoutServlet(accountService);
         Servlet signup = new SignupServlet(accountService);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(admin), "/admin/");
-        context.addServlet(new ServletHolder(login), "/api/v1/auth/signin/");
-        context.addServlet(new ServletHolder(logout), "/logout/");
         context.addServlet(new ServletHolder(profile), "/profile/");
+        context.addServlet(new ServletHolder(signin), "/api/v1/auth/signin/");
+        context.addServlet(new ServletHolder(signout), "/api/v1/auth/signout/");
         context.addServlet(new ServletHolder(signup), "/api/v1/auth/signup/");
 
         ResourceHandler resource_handler = new ResourceHandler();

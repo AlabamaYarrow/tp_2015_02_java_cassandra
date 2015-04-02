@@ -4,24 +4,22 @@ import base.ValidatedServlet;
 import main.AccountService;
 import main.UserProfile;
 import org.json.simple.JSONObject;
-import templater.PageGenerator;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginServlet extends ValidatedServlet {
+public class SigninServlet extends ValidatedServlet {
 
     protected final AccountService accountService;
 
     private static final String[] LOGIN_REQUIRED_FIELDS = {"name", "password", };
 
-    public LoginServlet(AccountService accountService) {
-        super(LoginServlet.LOGIN_REQUIRED_FIELDS);
+    public SigninServlet(AccountService accountService) {
+        super(SigninServlet.LOGIN_REQUIRED_FIELDS);
         this.accountService = accountService;
     }
 
