@@ -20,10 +20,12 @@ public class AdminServlet extends HttpServlet {
 
     protected final AccountService accountService;
     protected final PageGenerator pageGenerator;
+    protected final Timer timer;
 
-    public AdminServlet(AccountService accountService, PageGenerator pageGenerator) {
+    public AdminServlet(AccountService accountService, PageGenerator pageGenerator, Timer timer) {
         this.accountService = accountService;
         this.pageGenerator = pageGenerator;
+        this.timer = timer;
     }
 
     public void doGet(HttpServletRequest request,
@@ -46,14 +48,13 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
-        Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 System.exit(0);
             }
         };
-        timer.schedule(task, delay);
+        this.timer.schedule(task, delay);
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("stopping", true);

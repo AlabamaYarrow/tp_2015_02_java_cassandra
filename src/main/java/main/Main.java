@@ -10,6 +10,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import templater.PageGenerator;
 
 import javax.servlet.Servlet;
+import java.util.Timer;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -22,7 +23,7 @@ public class Main {
 
         AccountService accountService = new AccountService();
 
-        Servlet admin = new AdminServlet(accountService, new PageGenerator());
+        Servlet admin = new AdminServlet(accountService, new PageGenerator(), new Timer());
         Servlet authCheck = new AuthCheckServlet(accountService);
         Servlet signIn = new SignInServlet(accountService);
         Servlet signOut = new SignOutServlet(accountService);
