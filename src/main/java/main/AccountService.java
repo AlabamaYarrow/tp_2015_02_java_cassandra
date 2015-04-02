@@ -7,7 +7,8 @@ public class AccountService {
     protected Map<String, UserProfile> users = new HashMap<>();
     protected Map<String, UserProfile> sessions = new HashMap<>();
 
-    public boolean addUser(String userName, UserProfile userProfile) {
+    public boolean addUser(UserProfile userProfile) {
+        String userName = userProfile.getName();
         if (users.containsKey(userName)) {
             return false;
         }
@@ -15,7 +16,7 @@ public class AccountService {
         return true;
     }
 
-    public void login(String sessionId, UserProfile userProfile) {
+    public void signIn(String sessionId, UserProfile userProfile) {
         sessions.put(sessionId, userProfile);
     }
 
@@ -23,7 +24,7 @@ public class AccountService {
         sessions.remove(sessionId);
     }
 
-    public UserProfile getUserByLogin(String login) {
+    public UserProfile getUserByName(String login) {
         return users.get(login);
     }
 

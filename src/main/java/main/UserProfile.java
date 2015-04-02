@@ -12,7 +12,7 @@ public class UserProfile extends Hydrateable {
     protected String password;
     protected int score;
 
-    public UserProfile(String name, String password, String email) {
+    public UserProfile(String email, String name, String password) {
         this.id = UserProfile.getUniqueId();
         this.email = email;
         this.name = name;
@@ -24,8 +24,20 @@ public class UserProfile extends Hydrateable {
         return this.password.equals(password);
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
+    public int getID() {
+        return this.id;
+    }
+
     public String getName() {
-        return name;
+        return this.name;
+    }
+
+    public int getScore() {
+        return this.score;
     }
 
     protected static int getUniqueId() {

@@ -12,14 +12,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SigninServlet extends ValidatedServlet {
+public class SignInServlet extends ValidatedServlet {
 
     protected final AccountService accountService;
 
     private static final String[] LOGIN_REQUIRED_FIELDS = {"name", "password", };
 
-    public SigninServlet(AccountService accountService) {
-        super(SigninServlet.LOGIN_REQUIRED_FIELDS);
+    public SignInServlet(AccountService accountService) {
+        super(SignInServlet.LOGIN_REQUIRED_FIELDS);
         this.accountService = accountService;
     }
 
@@ -39,12 +39,13 @@ public class SigninServlet extends ValidatedServlet {
             status = HttpServletResponse.SC_BAD_REQUEST;
         } else {
             String name = request.getParameter("name");
-            UserProfile loggedInUser = this.accountService.getUserByLogin(name);
-            if (null == loggedInUser || !loggedInUser.checkPassword(request.getParameter("password"))) {
+            user = this.accountService.getUserByName(name);
+            if (null == user || !user.checkPassword(request.getParameter("password"))) {
                 status = HttpServletResponse.SC_UNAUTHORIZED;
                 jsonBody.put("message", "Incorrect username or password.");
             } else {
-                loggedInUser.hydrate(jsonBody);
+                this.accountService.signIn(request.getSession().getId(), user);
+                user.hydrate(jsonBody);
             }
         }
         json.put("status", status);

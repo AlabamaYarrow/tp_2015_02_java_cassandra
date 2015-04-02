@@ -12,14 +12,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SignupServlet extends ValidatedServlet {
+public class SignUpServlet extends ValidatedServlet {
 
     protected final AccountService accountService;
 
     private static final String[] SIGNUP_REQUIRED_FIELDS = {"email", "name", "password", };
 
-    public SignupServlet(AccountService accountService) {
-        super(SignupServlet.SIGNUP_REQUIRED_FIELDS);
+    public SignUpServlet(AccountService accountService) {
+        super(SignUpServlet.SIGNUP_REQUIRED_FIELDS);
         this.accountService = accountService;
     }
 
@@ -39,8 +39,8 @@ public class SignupServlet extends ValidatedServlet {
             status = HttpServletResponse.SC_BAD_REQUEST;
         } else {
             String name = request.getParameter("name");
-            UserProfile newUser = new UserProfile(name, request.getParameter("password"), request.getParameter("email"));
-            if (accountService.addUser(name, newUser)) {
+            UserProfile newUser = new UserProfile(request.getParameter("email"), name, request.getParameter("password"));
+            if (accountService.addUser(newUser)) {
                 newUser.hydrate(jsonBody);
             } else {
                 status = HttpServletResponse.SC_BAD_REQUEST;
