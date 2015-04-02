@@ -7,15 +7,17 @@ import java.util.Map;
 public class UserProfile extends Hydrateable {
     protected static int idCounter = 0;
     protected int id;
+    protected String email;
     protected String name;
     protected String password;
-    protected String email;
+    protected int score;
 
     public UserProfile(String name, String password, String email) {
         this.id = UserProfile.getUniqueId();
+        this.email = email;
         this.name = name;
         this.password = password;
-        this.email = email;
+        this.score = 0;
     }
 
     public boolean checkPassword(String password) {
@@ -26,10 +28,6 @@ public class UserProfile extends Hydrateable {
         return name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     protected static int getUniqueId() {
         return ++UserProfile.idCounter;
     }
@@ -37,7 +35,8 @@ public class UserProfile extends Hydrateable {
     @Override
     public void hydrate(Map<Object, Object> map) {
         map.put("id", this.id);
-        map.put("name", this.name);
         map.put("email", this.email);
+        map.put("name", this.name);
+        map.put("score", this.score);
     }
 }

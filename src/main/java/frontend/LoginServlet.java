@@ -1,7 +1,9 @@
 package frontend;
 
+import base.ValidatedServlet;
 import main.AccountService;
 import main.UserProfile;
+import org.json.simple.JSONObject;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -12,66 +14,43 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginServlet extends HttpServlet {
-    protected static final String TEMPLATE = "name.ftl";
-    protected static final String ERROR_MESSAGE = "Incorrect username or password.";
+public class LoginServlet extends ValidatedServlet {
 
     protected final AccountService accountService;
 
+    private static final String[] LOGIN_REQUIRED_FIELDS = {"name", "password", };
+
     public LoginServlet(AccountService accountService) {
+        super(LoginServlet.LOGIN_REQUIRED_FIELDS);
         this.accountService = accountService;
-    }
-
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
-        Map<String, Object> pageVariables = new HashMap<>();
-
-        UserProfile user = this.accountService.getUser(request.getSession().getId());
-        if (null != user) {
-            pageVariables.put("user", user);
-        }
-
-        response.getWriter().println(PageGenerator.getPage(LoginServlet.TEMPLATE, pageVariables));
     }
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        Map<String, Object> pageVariables = new HashMap<>();
+        JSONObject json = new JSONObject();
+        Map<Object, Object> jsonBody = new HashMap<>();
+        json.put("body", jsonBody);
 
-        String sid = request.getSession().getId();
-        UserProfile user = this.accountService.getUser(sid);
+        int status = HttpServletResponse.SC_OK;
+
+        UserProfile user = this.accountService.getUser(request.getSession().getId());
         if (null != user) {
-            pageVariables.put("user", user);
+            status = HttpServletResponse.SC_FORBIDDEN;
+            jsonBody.put("message", "You're already authorized.");
+        } else if (!this.areRequiredFieldsValid(request, jsonBody)) {
+            status = HttpServletResponse.SC_BAD_REQUEST;
         } else {
-            boolean isValid = true;
-
-            String login = request.getParameter("name");
-            if (null == login || login.isEmpty()) {
-                pageVariables.put("login_error", "Login is strictly required field.");
-                isValid = false;
+            String name = request.getParameter("name");
+            UserProfile loggedInUser = this.accountService.getUserByLogin(name);
+            if (null == loggedInUser || !loggedInUser.checkPassword(request.getParameter("password"))) {
+                status = HttpServletResponse.SC_UNAUTHORIZED;
+                jsonBody.put("message", "Incorrect username or password.");
             } else {
-                pageVariables.put("name", login);
-            }
-
-            String password = request.getParameter("password");
-            if (null == password || password.isEmpty()) {
-                pageVariables.put("password_error", "Password is required field.");
-                isValid = false;
-            } else {
-                pageVariables.put("password", password);
-            }
-
-            if (isValid) {
-                UserProfile loggedInUser = this.accountService.getUserByLogin(login);
-                if (null == loggedInUser || !loggedInUser.checkPassword(password)) {
-                    pageVariables.put("login_procedure_error", LoginServlet.ERROR_MESSAGE);
-                } else {
-                    accountService.login(sid, loggedInUser);
-                    pageVariables.put("logged_in_user", loggedInUser);
-                }
+                loggedInUser.hydrate(jsonBody);
             }
         }
-
-        response.getWriter().println(PageGenerator.getPage(LoginServlet.TEMPLATE, pageVariables));
+        json.put("status", status);
+        response.setStatus(status);
+        response.getWriter().println(json.toJSONString());
     }
 }

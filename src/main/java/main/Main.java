@@ -29,10 +29,10 @@ public class Main {
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(admin), "/admin/");
-        context.addServlet(new ServletHolder(login), "/login/");
+        context.addServlet(new ServletHolder(login), "/api/v1/auth/signin/");
         context.addServlet(new ServletHolder(logout), "/logout/");
         context.addServlet(new ServletHolder(profile), "/profile/");
-        context.addServlet(new ServletHolder(signup), "/signup/");
+        context.addServlet(new ServletHolder(signup), "/api/v1/auth/signup/");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);

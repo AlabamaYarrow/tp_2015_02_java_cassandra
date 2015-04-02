@@ -14,12 +14,12 @@ import java.util.Map;
 
 public class SignupServlet extends ValidatedServlet {
 
-    private static final String[] SIGNUP_REQUIRED_FIELDS = {"email", "name", "password", };
-
     protected final AccountService accountService;
 
+    private static final String[] SIGNUP_REQUIRED_FIELDS = {"email", "name", "password", };
+
     public SignupServlet(AccountService accountService) {
-        super(SIGNUP_REQUIRED_FIELDS);
+        super(SignupServlet.SIGNUP_REQUIRED_FIELDS);
         this.accountService = accountService;
     }
 
