@@ -14,7 +14,7 @@ public class PageGenerator {
     protected static final String HTML_DIR = "templates";
     protected static final Configuration CFG = new Configuration();
 
-    public static String getPage(String filename, Map<String, Object> data) {
+    public String getPage(String filename, Map<String, Object> data) {
         Writer stream = new StringWriter();
         try {
             Template template = PageGenerator.CFG.getTemplate(PageGenerator.HTML_DIR + File.separator + filename);

@@ -39,8 +39,4 @@ public class AccountService {
     public UserProfile getUser(String sid) {
         return this.sessions.get(sid);
     }
-
-    public UserProfile getSessions(String sessionId) {
-        return sessions.get(sessionId);
-    }
 }

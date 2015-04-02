@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import templater.PageGenerator;
 
 import javax.servlet.Servlet;
 
@@ -21,7 +22,7 @@ public class Main {
 
         AccountService accountService = new AccountService();
 
-        Servlet admin = new AdminServlet(accountService);
+        Servlet admin = new AdminServlet(accountService, new PageGenerator());
         Servlet authCheck = new AuthCheckServlet(accountService);
         Servlet signIn = new SignInServlet(accountService);
         Servlet signOut = new SignOutServlet(accountService);

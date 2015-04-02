@@ -19,9 +19,11 @@ public class AdminServlet extends HttpServlet {
     protected static final String TEMPLATE = "admin.ftl";
 
     protected final AccountService accountService;
+    protected final PageGenerator pageGenerator;
 
-    public AdminServlet(AccountService accountService) {
+    public AdminServlet(AccountService accountService, PageGenerator pageGenerator) {
         this.accountService = accountService;
+        this.pageGenerator = pageGenerator;
     }
 
     public void doGet(HttpServletRequest request,
@@ -31,7 +33,7 @@ public class AdminServlet extends HttpServlet {
         pageVariables.put("registered_count", this.accountService.getUsersCount());
         pageVariables.put("online_count", this.accountService.getOnlineCount());
 
-        response.getWriter().println(PageGenerator.getPage(AdminServlet.TEMPLATE, pageVariables));
+        response.getWriter().println(this.pageGenerator.getPage(AdminServlet.TEMPLATE, pageVariables));
     }
 
     public void doPost(HttpServletRequest request,
@@ -55,6 +57,6 @@ public class AdminServlet extends HttpServlet {
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("stopping", true);
-        response.getWriter().println(PageGenerator.getPage(AdminServlet.TEMPLATE, pageVariables));
+        response.getWriter().println(this.pageGenerator.getPage(AdminServlet.TEMPLATE, pageVariables));
     }
 }
