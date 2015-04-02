@@ -51,11 +51,29 @@
 
 ### Пример POST-запроса
 
+Все параметры обязательны. В случае отсутствия одного из параметров будет ошибка 400.
+
 ```javascript
 {
-    name: String,
-    email: String,
-    password: String
+    name: "Vasya",
+    email: "vasya@mail.com",
+    password: "topsecret"
+}
+```
+
+#### Есть пользователь с таким именем / email
+
+Код ответа: 400
+
+```javascript
+{
+    status: 400,
+    body: {
+        name: {
+          error: "already_exists",
+          value: "Vasya"
+        }
+    }
 }
 ```
 
