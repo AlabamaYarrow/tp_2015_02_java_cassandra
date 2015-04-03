@@ -5,6 +5,7 @@ import main.AccountService;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 
+import javax.jws.Oneway;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,13 +40,13 @@ public class SignInServlet extends ValidatedServlet {
             status = HttpServletResponse.SC_BAD_REQUEST;
         } else {
             String name = request.getParameter("name");
-            user = this.accountService.getUserByName(name);
-            if (null == user || !user.checkPassword(request.getParameter("password"))) {
+            String sid = request.getSession().getId();
+            if (this.accountService.signIn(sid, name, request.getParameter("password"))) {
+                user = this.accountService.getUser(sid);
+                user.hydrate(jsonBody);
+            } else {
                 status = HttpServletResponse.SC_UNAUTHORIZED;
                 jsonBody.put("message", "Incorrect username or password.");
-            } else {
-                this.accountService.signIn(request.getSession().getId(), user);
-                user.hydrate(jsonBody);
             }
         }
         json.put("status", status);

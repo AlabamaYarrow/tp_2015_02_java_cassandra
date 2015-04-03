@@ -15,7 +15,7 @@ public abstract class UserProfileTest extends ServletTest {
 
     protected HttpServletRequest getSignedInRequest(UserProfile user) {
         HttpServletRequest request = this.getMockedRequest();
-        this.accountService.signIn(request.getSession().getId(), user);
+        this.accountService.signIn(request.getSession().getId(), user.getName(), "topsecret");
         return request;
     }
 
