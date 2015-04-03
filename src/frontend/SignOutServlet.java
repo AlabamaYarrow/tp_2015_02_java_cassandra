@@ -21,7 +21,7 @@ public class SignOutServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request,
-                      HttpServletResponse response) throws ServletException, IOException {
+                       HttpServletResponse response) throws ServletException, IOException {
         JSONObject json = new JSONObject();
         Map<Object, Object> jsonBody = new HashMap<>();
         json.put("body", jsonBody);

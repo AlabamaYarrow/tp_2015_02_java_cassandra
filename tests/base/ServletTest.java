@@ -17,7 +17,7 @@ public abstract class ServletTest extends TestCase {
 
     protected void checkStatusCode(int statusCode, HttpServletResponse response, Map<Object, Object> json) {
         verify(response).setStatus(statusCode);
-        TestCase.assertEquals((long)statusCode, json.get("status"));
+        assertEquals((long) statusCode, json.get("status"));
     }
 
     protected HttpServletRequest getMockedRequest() {

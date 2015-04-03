@@ -1,7 +1,6 @@
 package frontend;
 
 import base.UserProfileTest;
-import junit.framework.TestCase;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -40,6 +39,6 @@ public class AuthCheckServletTest extends UserProfileTest {
         this.checkStatusCode(HttpServletResponse.SC_UNAUTHORIZED, response, json);
 
         JSONObject body = (JSONObject) json.get("body");
-        TestCase.assertNotNull(body);
+        assertNotNull(body);
     }
 }

@@ -43,7 +43,7 @@ public class PageGeneratorTest extends TestCase {
         final String TEXT = "foo bar baz";
         doAnswer((InvocationOnMock invocation) -> ((Writer) invocation.getArguments()[1]).append(TEXT)).when(this.template).process(eq(DATA), any(Writer.class));
         when(configuration.getTemplate(PageGeneratorTest.TEMPLATES_DIR + File.separator + FILENAME)).thenReturn(this.template);
-        TestCase.assertEquals(TEXT, pageGenerator.getPage(FILENAME, DATA));
+        assertEquals(TEXT, pageGenerator.getPage(FILENAME, DATA));
         reset(this.configuration, this.template);
     }
 }

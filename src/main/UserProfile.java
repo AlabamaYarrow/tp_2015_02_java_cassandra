@@ -20,6 +20,10 @@ public class UserProfile extends Hydrateable {
         this.score = 0;
     }
 
+    protected static int getUniqueId() {
+        return ++UserProfile.idCounter;
+    }
+
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
@@ -38,10 +42,6 @@ public class UserProfile extends Hydrateable {
 
     public int getScore() {
         return this.score;
-    }
-
-    protected static int getUniqueId() {
-        return ++UserProfile.idCounter;
     }
 
     @Override

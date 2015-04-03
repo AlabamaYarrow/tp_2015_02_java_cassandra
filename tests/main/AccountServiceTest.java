@@ -5,10 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceTest extends TestCase {
@@ -30,38 +29,38 @@ public class AccountServiceTest extends TestCase {
     @Test
     public void testAddUserAlreadyExists() throws Exception {
         AccountService accountService = new AccountService();
-        TestCase.assertTrue(accountService.addUser(this.user));
-        TestCase.assertFalse(accountService.addUser(this.user));
+        assertTrue(accountService.addUser(this.user));
+        assertFalse(accountService.addUser(this.user));
     }
 
     @Test
     public void testAddUserOK() throws Exception {
         AccountService accountService = new AccountService();
         accountService.addUser(this.user);
-        TestCase.assertEquals(this.user, accountService.getUserByName(this.user.getName()));
+        assertEquals(this.user, accountService.getUserByName(this.user.getName()));
     }
 
     @Test
     public void testSignInBadName() throws Exception {
         AccountService accountService = new AccountService();
         accountService.addUser(this.user);
-        TestCase.assertFalse(accountService.signIn(SID, "some name", "topsecret"));
-        TestCase.assertNull(accountService.getUser(SID));
+        assertFalse(accountService.signIn(SID, "some name", "topsecret"));
+        assertNull(accountService.getUser(SID));
     }
 
     @Test
     public void testSignInBadPassword() throws Exception {
         AccountService accountService = new AccountService();
         accountService.addUser(this.user);
-        TestCase.assertFalse(accountService.signIn(SID, user.getName(), "not_a_secret"));
-        TestCase.assertNull(accountService.getUser(SID));
+        assertFalse(accountService.signIn(SID, user.getName(), "not_a_secret"));
+        assertNull(accountService.getUser(SID));
     }
 
     @Test
     public void testSignInOK() throws Exception {
         AccountService accountService = new AccountService();
         accountService.addUser(this.user);
-        TestCase.assertTrue(accountService.signIn(SID, user.getName(), "topsecret"));
-        TestCase.assertEquals(this.user, accountService.getUser(SID));
+        assertTrue(accountService.signIn(SID, user.getName(), "topsecret"));
+        assertEquals(this.user, accountService.getUser(SID));
     }
 }

@@ -1,7 +1,6 @@
 package frontend;
 
 import main.AccountService;
-import main.UserProfile;
 import templater.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -13,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class AdminServlet extends HttpServlet {
     protected static final String TEMPLATE = "admin.ftl";

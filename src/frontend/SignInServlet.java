@@ -5,7 +5,6 @@ import main.AccountService;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 
-import javax.jws.Oneway;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +14,8 @@ import java.util.Map;
 
 public class SignInServlet extends ValidatedServlet {
 
+    private static final String[] LOGIN_REQUIRED_FIELDS = {"name", "password",};
     protected final AccountService accountService;
-
-    private static final String[] LOGIN_REQUIRED_FIELDS = {"name", "password", };
 
     public SignInServlet(AccountService accountService) {
         super(SignInServlet.LOGIN_REQUIRED_FIELDS);

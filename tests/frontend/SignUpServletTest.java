@@ -1,7 +1,6 @@
 package frontend;
 
 import base.UserProfileTest;
-import junit.framework.TestCase;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -10,7 +9,8 @@ import org.junit.Test;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SignUpServletTest extends UserProfileTest {
 
@@ -36,8 +36,8 @@ public class SignUpServletTest extends UserProfileTest {
 
         JSONObject body = (JSONObject) json.get("body");
         JSONObject error = (JSONObject) body.get("password");
-        TestCase.assertEquals("required", error.get("error"));
-        TestCase.assertNull(error.get("value"));
+        assertEquals("required", error.get("error"));
+        assertNull(error.get("value"));
     }
 
     @Test
@@ -57,8 +57,8 @@ public class SignUpServletTest extends UserProfileTest {
 
         JSONObject body = (JSONObject) json.get("body");
         JSONObject error = (JSONObject) body.get("name");
-        TestCase.assertEquals("already_exists", error.get("error"));
-        TestCase.assertEquals(user.getName(), error.get("value"));
+        assertEquals("already_exists", error.get("error"));
+        assertEquals(user.getName(), error.get("value"));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class SignUpServletTest extends UserProfileTest {
         this.checkStatusCode(HttpServletResponse.SC_FORBIDDEN, response, json);
 
         JSONObject body = (JSONObject) json.get("body");
-        TestCase.assertNotNull(body);
+        assertNotNull(body);
     }
 
     @Test

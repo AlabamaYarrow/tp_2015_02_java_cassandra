@@ -9,7 +9,7 @@ public class ValidatedServlet extends HttpServlet {
 
     protected final String[] REQUIRED_FIELDS;
 
-    protected ValidatedServlet (String[] requiredFields) {
+    protected ValidatedServlet(String[] requiredFields) {
         this.REQUIRED_FIELDS = requiredFields;
     }
 
@@ -18,7 +18,7 @@ public class ValidatedServlet extends HttpServlet {
      */
     protected boolean areRequiredFieldsValid(HttpServletRequest request, Map<Object, Object> jsonBody) {
         boolean isValid = true;
-        for (String name: this.REQUIRED_FIELDS) {
+        for (String name : this.REQUIRED_FIELDS) {
             String value = request.getParameter(name);
             if (null == value || value.isEmpty()) {
                 isValid = false;

@@ -2,7 +2,6 @@ package frontend;
 
 import base.GameMechanics;
 import base.WebSocketService;
-import org.eclipse.jetty.server.session.JDBCSessionManager;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
