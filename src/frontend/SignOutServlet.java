@@ -1,6 +1,6 @@
 package frontend;
 
-import main.AccountService;
+import base.AccountService;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 

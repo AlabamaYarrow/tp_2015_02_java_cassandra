@@ -1,6 +1,7 @@
 package base;
 
-import main.AccountService;
+import base.AccountService;
+import main.AccountServiceImpl;
 import main.UserProfile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +10,7 @@ import java.util.Map;
 public abstract class UserProfileTest extends ServletTest {
 
     protected static int counter = 0;
-    protected AccountService accountService = new AccountService();
+    protected AccountService accountService = new AccountServiceImpl();
 
     protected static int getUniqueCounter() {
         return ++UserProfileTest.counter;

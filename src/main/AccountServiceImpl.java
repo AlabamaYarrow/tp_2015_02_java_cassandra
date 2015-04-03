@@ -1,9 +1,11 @@
 package main;
 
+import base.AccountService;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class AccountService {
+public class AccountServiceImpl implements AccountService {
     protected Map<String, UserProfile> users = new HashMap<>();
     protected Map<String, UserProfile> sessions = new HashMap<>();
 

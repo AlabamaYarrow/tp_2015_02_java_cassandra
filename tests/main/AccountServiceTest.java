@@ -1,5 +1,6 @@
 package main;
 
+import base.AccountService;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,21 +29,21 @@ public class AccountServiceTest extends TestCase {
 
     @Test
     public void testAddUserAlreadyExists() throws Exception {
-        AccountService accountService = new AccountService();
+        AccountService accountService = new AccountServiceImpl();
         assertTrue(accountService.addUser(this.user));
         assertFalse(accountService.addUser(this.user));
     }
 
     @Test
     public void testAddUserOK() throws Exception {
-        AccountService accountService = new AccountService();
+        AccountService accountService = new AccountServiceImpl();
         accountService.addUser(this.user);
         assertEquals(this.user, accountService.getUserByName(this.user.getName()));
     }
 
     @Test
     public void testSignInBadName() throws Exception {
-        AccountService accountService = new AccountService();
+        AccountService accountService = new AccountServiceImpl();
         accountService.addUser(this.user);
         assertFalse(accountService.signIn(SID, "some name", "topsecret"));
         assertNull(accountService.getUser(SID));
@@ -50,7 +51,7 @@ public class AccountServiceTest extends TestCase {
 
     @Test
     public void testSignInBadPassword() throws Exception {
-        AccountService accountService = new AccountService();
+        AccountService accountService = new AccountServiceImpl();
         accountService.addUser(this.user);
         assertFalse(accountService.signIn(SID, user.getName(), "not_a_secret"));
         assertNull(accountService.getUser(SID));
@@ -58,7 +59,7 @@ public class AccountServiceTest extends TestCase {
 
     @Test
     public void testSignInOK() throws Exception {
-        AccountService accountService = new AccountService();
+        AccountService accountService = new AccountServiceImpl();
         accountService.addUser(this.user);
         assertTrue(accountService.signIn(SID, user.getName(), "topsecret"));
         assertEquals(this.user, accountService.getUser(SID));

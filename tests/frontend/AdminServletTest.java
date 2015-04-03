@@ -1,7 +1,7 @@
 package frontend;
 
 import base.ServletTest;
-import main.AccountService;
+import base.AccountService;
 import org.junit.Test;
 import templater.PageGenerator;
 

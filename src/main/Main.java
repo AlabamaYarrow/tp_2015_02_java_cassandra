@@ -1,5 +1,6 @@
 package main;
 
+import base.AccountService;
 import freemarker.template.Configuration;
 import frontend.*;
 import org.eclipse.jetty.server.Handler;
@@ -22,7 +23,7 @@ public class Main {
         }
         System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
 
-        AccountService accountService = new AccountService();
+        AccountService accountService = new AccountServiceImpl();
 
         Servlet admin = new AdminServlet(accountService, new PageGenerator("templates", new Configuration()), new Timer());
         Servlet authCheck = new AuthCheckServlet(accountService);

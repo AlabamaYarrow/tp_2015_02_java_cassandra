@@ -2,7 +2,7 @@ package frontend;
 
 import base.GameMechanics;
 import base.WebSocketService;
-import main.AccountService;
+import base.AccountService;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
