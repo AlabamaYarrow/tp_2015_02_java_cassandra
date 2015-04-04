@@ -263,12 +263,14 @@
     {
       type: "viewer_status",
       body: {
-        artist: {},
-        cassandra: {},
-        judges: [
-          {}, {}
-        ],
-        secret: "Cow",
+        round: { // или null, если на сервере не ведётся ни одной игры, достойной наблюдения.
+          artist: {},
+          cassandra: {},
+          judges: [
+            {}, {}
+          ],
+          secret: "Cow"
+        },
         viewers: [
           {}, {}
         ]
