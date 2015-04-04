@@ -11,6 +11,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import resources.ResourceSystem;
 import utils.PageGenerator;
 
 import javax.servlet.Servlet;
@@ -42,6 +43,8 @@ public class Main {
         context.addServlet(new ServletHolder(signIn), "/api/v1/auth/signin/");
         context.addServlet(new ServletHolder(signOut), "/api/v1/auth/signout/");
         context.addServlet(new ServletHolder(signUp), "/api/v1/auth/signup/");
+
+        ResourceSystem resourceSystem = ResourceSystem.getInstance();
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
