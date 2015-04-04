@@ -3,25 +3,30 @@ package main;
 import base.AccountService;
 import freemarker.template.Configuration;
 import frontend.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import templater.PageGenerator;
+import utils.PageGenerator;
 
 import javax.servlet.Servlet;
 import java.util.Timer;
 
 public class Main {
+
+    private static Logger LOGGER = LogManager.getLogger(Main.class);
+
     public static void main(String[] args) throws Exception {
         int port = 8100;
         if (args.length == 1) {
             String portString = args[0];
             port = Integer.valueOf(portString);
         }
-        System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
+        LOGGER.info("Starting at port: {}", port);
 
         AccountService accountService = new AccountServiceImpl();
 

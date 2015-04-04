@@ -3,7 +3,7 @@ package base;
 import main.UserProfile;
 
 public interface AccountService {
-    
+
     public UserProfile getUser(String sid);
 
     boolean signIn(String sid, String name, String password);

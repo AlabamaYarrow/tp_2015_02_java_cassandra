@@ -1,7 +1,7 @@
 package frontend;
 
-import base.ValidatedServlet;
 import base.AccountService;
+import base.ValidatedServlet;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 

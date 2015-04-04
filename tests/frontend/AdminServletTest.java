@@ -3,7 +3,7 @@ package frontend;
 import base.ServletTest;
 import base.AccountService;
 import org.junit.Test;
-import templater.PageGenerator;
+import utils.PageGenerator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
