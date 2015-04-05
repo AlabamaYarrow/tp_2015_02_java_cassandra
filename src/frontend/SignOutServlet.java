@@ -1,7 +1,7 @@
 package frontend;
 
 import base.AccountService;
-import main.UserProfile;
+import main.NoUserException;
 import org.json.simple.JSONObject;
 
 import javax.servlet.ServletException;
@@ -28,12 +28,11 @@ public class SignOutServlet extends HttpServlet {
 
         int status = HttpServletResponse.SC_OK;
 
-        UserProfile user = this.accountService.getUser(request.getSession().getId());
-        if (null == user) {
+        String sid = request.getSession().getId();
+        try {
+            this.accountService.signOut(sid);
+        } catch (NoUserException e) {
             status = HttpServletResponse.SC_UNAUTHORIZED;
-        } else {
-            String sid = request.getSession().getId();
-            this.accountService.logout(sid);
         }
         json.put("status", status);
         response.setStatus(status);

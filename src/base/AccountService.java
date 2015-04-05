@@ -1,20 +1,22 @@
 package base;
 
+import main.NoUserException;
+import main.SignInException;
 import main.UserProfile;
 
 public interface AccountService {
 
-    public UserProfile getUser(String sid);
+    public UserProfile getUser(String sid) throws NoUserException;
 
-    boolean signIn(String sid, String name, String password);
+    UserProfile signIn(String sid, String name, String password) throws SignInException;
 
     long getUsersCount();
 
     long getOnlineCount();
 
-    void logout(String sid);
+    void signOut(String sid) throws NoUserException;
 
     boolean addUser(UserProfile newUser);
 
-    UserProfile getUserByName(String name);
+    UserProfile getUserByName(String name) throws NoUserException;
 }

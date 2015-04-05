@@ -2,6 +2,8 @@ package frontend;
 
 import base.AccountService;
 import base.ValidatedServlet;
+import main.NoUserException;
+import main.SignInException;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 
@@ -30,21 +32,24 @@ public class SignInServlet extends ValidatedServlet {
 
         int status = HttpServletResponse.SC_OK;
 
-        UserProfile user = this.accountService.getUser(request.getSession().getId());
-        if (null != user) {
+        UserProfile user = null;
+        try {
+            user = this.accountService.getUser(request.getSession().getId());
             status = HttpServletResponse.SC_FORBIDDEN;
             jsonBody.put("message", "You're already authorized.");
-        } else if (!this.areRequiredFieldsValid(request, jsonBody)) {
-            status = HttpServletResponse.SC_BAD_REQUEST;
-        } else {
-            String name = request.getParameter("name");
-            String sid = request.getSession().getId();
-            if (this.accountService.signIn(sid, name, request.getParameter("password"))) {
-                user = this.accountService.getUser(sid);
-                user.hydrate(jsonBody);
+        } catch (NoUserException e) {
+            if (!this.areRequiredFieldsValid(request, jsonBody)) {
+                status = HttpServletResponse.SC_BAD_REQUEST;
             } else {
-                status = HttpServletResponse.SC_UNAUTHORIZED;
-                jsonBody.put("message", "Incorrect username or password.");
+                String name = request.getParameter("name");
+                String sid = request.getSession().getId();
+                try {
+                    user = this.accountService.signIn(sid, name, request.getParameter("password"));
+                    user.hydrate(jsonBody);
+                } catch (SignInException e1) {
+                    status = HttpServletResponse.SC_UNAUTHORIZED;
+                    jsonBody.put("message", "Incorrect username or password.");
+                }
             }
         }
         json.put("status", status);

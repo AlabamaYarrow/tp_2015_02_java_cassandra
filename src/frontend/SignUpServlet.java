@@ -2,6 +2,7 @@ package frontend;
 
 import base.AccountService;
 import base.ValidatedServlet;
+import main.NoUserException;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 
@@ -30,23 +31,26 @@ public class SignUpServlet extends ValidatedServlet {
 
         int status = HttpServletResponse.SC_OK;
 
-        UserProfile user = this.accountService.getUser(request.getSession().getId());
-        if (null != user) {
+        UserProfile user;
+        try {
+            user = this.accountService.getUser(request.getSession().getId());
             status = HttpServletResponse.SC_FORBIDDEN;
             jsonBody.put("message", "You're already authorized.");
-        } else if (!this.areRequiredFieldsValid(request, jsonBody)) {
-            status = HttpServletResponse.SC_BAD_REQUEST;
-        } else {
-            String name = request.getParameter("name");
-            UserProfile newUser = new UserProfile(request.getParameter("email"), name, request.getParameter("password"));
-            if (accountService.addUser(newUser)) {
-                newUser.hydrate(jsonBody);
-            } else {
+        } catch (NoUserException e) {
+            if (!this.areRequiredFieldsValid(request, jsonBody)) {
                 status = HttpServletResponse.SC_BAD_REQUEST;
-                Map<Object, Object> nameError = new HashMap<>();
-                jsonBody.put("name", nameError);
-                nameError.put("error", "already_exists");
-                nameError.put("value", name);
+            } else {
+                String name = request.getParameter("name");
+                user = new UserProfile(request.getParameter("email"), name, request.getParameter("password"));
+                if (accountService.addUser(user)) {
+                    user.hydrate(jsonBody);
+                } else {
+                    status = HttpServletResponse.SC_BAD_REQUEST;
+                    Map<Object, Object> nameError = new HashMap<>();
+                    jsonBody.put("name", nameError);
+                    nameError.put("error", "already_exists");
+                    nameError.put("value", name);
+                }
             }
         }
         json.put("status", status);

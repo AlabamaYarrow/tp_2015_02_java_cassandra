@@ -1,6 +1,7 @@
 package frontend;
 
 import base.AccountService;
+import main.NoUserException;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 
@@ -28,11 +29,12 @@ public class AuthCheckServlet extends HttpServlet {
 
         int status = HttpServletResponse.SC_OK;
 
-        UserProfile user = this.accountService.getUser(request.getSession().getId());
-        if (null == user) {
-            status = HttpServletResponse.SC_UNAUTHORIZED;
-        } else {
+        UserProfile user;
+        try {
+            user = this.accountService.getUser(request.getSession().getId());
             user.hydrate(jsonBody);
+        } catch (NoUserException e) {
+            status = HttpServletResponse.SC_UNAUTHORIZED;
         }
         json.put("status", status);
         response.setStatus(status);
