@@ -1,6 +1,5 @@
 package base;
 
-import base.AccountService;
 import main.AccountServiceImpl;
 import main.UserProfile;
 
