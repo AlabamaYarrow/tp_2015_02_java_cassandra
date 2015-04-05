@@ -14,17 +14,17 @@ public class SaxHandler extends DefaultHandler {
     private Object object = null;
 
     public void startDocument() throws SAXException {
-        LOGGER.info("Start document");
+        LOGGER.debug("Start document");
     }
 
     public void endDocument() throws SAXException {
-        LOGGER.info("End document ");
+        LOGGER.debug("End document ");
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (qName.equals(ROOT_ELEMENT)) {
             String className = attributes.getValue(0);
-            LOGGER.info("Class name: " + className);
+            LOGGER.debug("Class name: {}", className);
             object = ReflectionHelper.createInstance(className);
         } else {
             element = qName;
@@ -38,7 +38,7 @@ public class SaxHandler extends DefaultHandler {
     public void characters(char ch[], int start, int length) throws SAXException {
         if (element != null) {
             String value = new String(ch, start, length);
-            LOGGER.info(element + " = " + value);
+            LOGGER.debug("{} = {}", element, value);
             ReflectionHelper.setFieldValue(object, element, value);
         }
     }
