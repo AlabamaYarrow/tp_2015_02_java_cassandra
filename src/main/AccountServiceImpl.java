@@ -1,7 +1,6 @@
 package main;
 
 import base.AccountService;
-import com.sun.istack.internal.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,8 @@ public class AccountServiceImpl implements AccountService {
     protected Map<String, UserProfile> users = new HashMap<>();
     protected Map<String, UserProfile> sessions = new HashMap<>();
 
-    public boolean addUser(@NotNull UserProfile userProfile) {
+    @Override
+    public boolean addUser(UserProfile userProfile) {
         String userName = userProfile.getName();
         if (users.containsKey(userName)) {
             return false;
@@ -19,6 +19,7 @@ public class AccountServiceImpl implements AccountService {
         return true;
     }
 
+    @Override
     public UserProfile signIn(String sessionId, String name, String password) throws SignInException {
         UserProfile user;
         try {
@@ -33,12 +34,14 @@ public class AccountServiceImpl implements AccountService {
         return user;
     }
 
+    @Override
     public void signOut(String sessionId) throws NoUserException {
         if (null == this.sessions.remove(sessionId)) {
             throw new NoUserException("There isn't anybody to logout.");
         }
     }
 
+    @Override
     public UserProfile getUserByName(String name) throws NoUserException {
         UserProfile user = this.users.get(name);
         if (null == user) {
@@ -47,14 +50,17 @@ public class AccountServiceImpl implements AccountService {
         return user;
     }
 
+    @Override
     public long getUsersCount() {
         return this.users.size();
     }
 
+    @Override
     public long getOnlineCount() {
         return this.sessions.size();
     }
 
+    @Override
     public UserProfile getUser(String sid) throws NoUserException {
         UserProfile user = this.sessions.get(sid);
         if (null == user) {

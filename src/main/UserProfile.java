@@ -1,10 +1,9 @@
 package main;
 
-import base.Hydrateable;
-
+import java.util.HashMap;
 import java.util.Map;
 
-public class UserProfile extends Hydrateable {
+public class UserProfile {
     protected static int idCounter = 0;
     protected int id;
     protected String email;
@@ -44,7 +43,12 @@ public class UserProfile extends Hydrateable {
         return this.score;
     }
 
-    @Override
+    public Map<Object, Object> getHydrated() {
+        Map<Object, Object> map = new HashMap<>();
+        this.hydrate(map);
+        return map;
+    }
+
     public void hydrate(Map<Object, Object> map) {
         map.put("id", this.id);
         map.put("email", this.email);

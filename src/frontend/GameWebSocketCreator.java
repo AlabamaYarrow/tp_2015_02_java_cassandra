@@ -9,6 +9,8 @@ import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 
+import javax.servlet.http.HttpServletResponse;
+
 public class GameWebSocketCreator implements WebSocketCreator {
     protected AccountService accountService;
     protected GameMechanics gameMechanics;
@@ -27,10 +29,11 @@ public class GameWebSocketCreator implements WebSocketCreator {
         try {
             user = this.accountService.getUser(sid);
         } catch (NoUserException e) {
-            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return null;
         }
         String name = user.getName();
-        return new GameWebSocket(name, this.gameMechanics, this.webSocketService);
+        GameWebSocket webSocket = new GameWebSocket(name, this.gameMechanics, this.webSocketService);
+        return webSocket;
     }
 }
