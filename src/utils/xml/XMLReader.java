@@ -1,5 +1,6 @@
 package utils.xml;
 
+import com.sun.istack.internal.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +11,7 @@ public class XMLReader {
 
     private static Logger LOGGER = LogManager.getLogger(XMLReader.class);
 
+    @Nullable
     public static Object read(String path) {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();

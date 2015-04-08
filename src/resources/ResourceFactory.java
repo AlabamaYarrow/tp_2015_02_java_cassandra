@@ -1,6 +1,7 @@
 package resources;
 
 import base.Resource;
+import com.sun.istack.internal.Nullable;
 import utils.xml.XMLReader;
 
 public class ResourceFactory {
@@ -18,6 +19,7 @@ public class ResourceFactory {
         return ResourceFactory.instance;
     }
 
+    @Nullable
     public Resource get(String path) {
         return (Resource) XMLReader.read(path);
     }

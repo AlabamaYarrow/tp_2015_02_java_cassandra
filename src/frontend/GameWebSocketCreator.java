@@ -16,10 +16,10 @@ public class GameWebSocketCreator implements WebSocketCreator {
     protected GameMechanics gameMechanics;
     protected WebSocketService webSocketService;
 
-    public GameWebSocketCreator(AccountService accountService, GameMechanics gameMechanics, WebSocketService webSocketService) {
+    public GameWebSocketCreator(AccountService accountService, GameMechanics gameMechanics/*, WebSocketService webSocketService*/) {
         this.accountService = accountService;
         this.gameMechanics = gameMechanics;
-        this.webSocketService = webSocketService;
+        //this.webSocketService = webSocketService;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class GameWebSocketCreator implements WebSocketCreator {
             return null;
         }
         String name = user.getName();
-        GameWebSocket webSocket = new GameWebSocket(name, this.gameMechanics, this.webSocketService);
+        GameWebSocket webSocket = new GameWebSocket(name, this.gameMechanics/*, this.webSocketService*/);
         return webSocket;
     }
 }

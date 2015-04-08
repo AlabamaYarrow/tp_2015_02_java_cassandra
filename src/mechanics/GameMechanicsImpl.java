@@ -25,13 +25,13 @@ public class GameMechanicsImpl implements GameMechanics {
             this.viewersTeam.remove(webSocket);
         } else {
             this.teams.remove(team);
+            team.remove(webSocket);
             List<GameWebSocket> users = team.getUsers();
-            users.remove(webSocket);
-            if (this.viewersTeam == null) {
+            List<GameWebSocket> viewers = this.viewersTeam.getUsers();
+            if (this.viewersTeam == null || viewers.size() == 0) {
                 this.viewersTeam = new Team(this, this.teams.peekFirst());
-                /* TODO */
             } else {
-
+                team.add(viewers.get(0));
             }
         }
     }

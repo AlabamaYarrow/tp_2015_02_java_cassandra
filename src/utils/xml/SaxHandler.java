@@ -18,7 +18,7 @@ public class SaxHandler extends DefaultHandler {
     }
 
     public void endDocument() throws SAXException {
-        LOGGER.debug("End document ");
+        LOGGER.debug("End document");
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -26,6 +26,7 @@ public class SaxHandler extends DefaultHandler {
             String className = attributes.getValue(0);
             LOGGER.debug("Class name: {}", className);
             object = ReflectionHelper.createInstance(className);
+            ReflectionHelper.setFieldValue(object, "name", className);
         } else {
             element = qName;
         }
