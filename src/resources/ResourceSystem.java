@@ -2,6 +2,7 @@ package resources;
 
 import base.Resource;
 import base.VFS;
+import com.sun.istack.internal.Nullable;
 import utils.VFSImpl;
 
 import java.util.HashMap;
@@ -18,8 +19,11 @@ public class ResourceSystem {
         VFS vfs = new VFSImpl("");
         for (Iterator<String> iterator = vfs.getIterator("resources"); iterator.hasNext(); ) {
             String path = iterator.next();
+            @Nullable
             Resource resource = ResourceFactory.getInstance().get(path);
-            this.RESOURCES.put(path, resource);
+            if (resource != null) {
+                this.RESOURCES.put(resource.getName(), resource);
+            }
         }
     }
 
@@ -28,5 +32,9 @@ public class ResourceSystem {
             ResourceSystem.instance = new ResourceSystem();
         }
         return ResourceSystem.instance;
+    }
+
+    public Resource getResource(String name) {
+        return this.RESOURCES.get(name);
     }
 }

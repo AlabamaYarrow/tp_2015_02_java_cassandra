@@ -1,7 +1,6 @@
 package frontend;
 
 import base.GameMechanics;
-import base.WebSocketService;
 import com.sun.istack.internal.Nullable;
 import main.UserProfile;
 import mechanics.Role;
@@ -29,11 +28,12 @@ public class GameWebSocket {
     protected Team team;
     protected Role role;
     protected GameMechanics gameMechanics;
-    protected WebSocketService webSocketService;
-    public GameWebSocket(String name, GameMechanics gameMechanics, WebSocketService webSocketService) {
+
+    //protected WebSocketService webSocketService;
+    public GameWebSocket(String name, GameMechanics gameMechanics/*, WebSocketService webSocketService*/) {
         this.name = name;
         this.gameMechanics = gameMechanics;
-        this.webSocketService = webSocketService;
+        //this.webSocketService = webSocketService;
     }
 
     public Team getTeam() {

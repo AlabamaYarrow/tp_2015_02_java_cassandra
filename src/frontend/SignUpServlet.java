@@ -37,9 +37,7 @@ public class SignUpServlet extends ValidatedServlet {
             status = HttpServletResponse.SC_FORBIDDEN;
             jsonBody.put("message", "You're already authorized.");
         } catch (NoUserException e) {
-            if (!this.areRequiredFieldsValid(request, jsonBody)) {
-                status = HttpServletResponse.SC_BAD_REQUEST;
-            } else {
+            if (this.areRequiredFieldsValid(request, jsonBody)) {
                 String name = request.getParameter("name");
                 user = new UserProfile(request.getParameter("email"), name, request.getParameter("password"));
                 if (accountService.addUser(user)) {
@@ -51,6 +49,8 @@ public class SignUpServlet extends ValidatedServlet {
                     nameError.put("error", "already_exists");
                     nameError.put("value", name);
                 }
+            } else {
+                status = HttpServletResponse.SC_BAD_REQUEST;
             }
         }
         json.put("status", status);

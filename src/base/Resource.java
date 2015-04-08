@@ -1,4 +1,5 @@
 package base;
 
-public interface Resource {
+public abstract class Resource {
+    public abstract String getName();
 }
