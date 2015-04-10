@@ -45,7 +45,7 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(admin), "/admin/");
         context.addServlet(new ServletHolder(authCheck), "/api/v1/auth/check/");
-        context.addServlet(new ServletHolder(game), "/api/v1/auth/game/");
+        context.addServlet(new ServletHolder(game), "/api/v1/game/");
         context.addServlet(new ServletHolder(signIn), "/api/v1/auth/signin/");
         context.addServlet(new ServletHolder(signOut), "/api/v1/auth/signout/");
         context.addServlet(new ServletHolder(signUp), "/api/v1/auth/signup/");

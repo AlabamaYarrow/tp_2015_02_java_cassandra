@@ -2,19 +2,20 @@ package frontend;
 
 import base.AccountService;
 import base.GameMechanics;
-import base.WebSocketService;
+import com.sun.istack.internal.Nullable;
 import main.NoUserException;
 import main.UserProfile;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 
-import javax.servlet.http.HttpServletResponse;
-
 public class GameWebSocketCreator implements WebSocketCreator {
+    //protected WebSocketService webSocketService;
+    private static final Logger LOGGER = LogManager.getLogger(GameWebSocketCreator.class);
     protected AccountService accountService;
     protected GameMechanics gameMechanics;
-    protected WebSocketService webSocketService;
 
     public GameWebSocketCreator(AccountService accountService, GameMechanics gameMechanics/*, WebSocketService webSocketService*/) {
         this.accountService = accountService;
@@ -23,17 +24,16 @@ public class GameWebSocketCreator implements WebSocketCreator {
     }
 
     @Override
+    @Nullable
     public Object createWebSocket(ServletUpgradeRequest request, ServletUpgradeResponse response) {
         String sid = request.getHttpServletRequest().getSession().getId();
-        UserProfile user;
         try {
-            user = this.accountService.getUser(sid);
+            UserProfile user = this.accountService.getUser(sid);
+            GameWebSocket webSocket = new GameWebSocket(user, this.gameMechanics/*, this.webSocketService*/);
+            return webSocket;
         } catch (NoUserException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            LOGGER.error("GameWebSocketCreator accepts only authorized users.", e);
             return null;
         }
-        String name = user.getName();
-        GameWebSocket webSocket = new GameWebSocket(name, this.gameMechanics/*, this.webSocketService*/);
-        return webSocket;
     }
 }

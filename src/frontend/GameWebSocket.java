@@ -22,7 +22,6 @@ import java.util.Map;
 @WebSocket
 public class GameWebSocket {
     private static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
-    protected String name;
     protected UserProfile userProfile;
     protected Session session;
     protected Team team;
@@ -30,8 +29,8 @@ public class GameWebSocket {
     protected GameMechanics gameMechanics;
 
     //protected WebSocketService webSocketService;
-    public GameWebSocket(String name, GameMechanics gameMechanics/*, WebSocketService webSocketService*/) {
-        this.name = name;
+    public GameWebSocket(UserProfile userProfile, GameMechanics gameMechanics/*, WebSocketService webSocketService*/) {
+        this.userProfile = userProfile;
         this.gameMechanics = gameMechanics;
         //this.webSocketService = webSocketService;
     }
@@ -102,15 +101,16 @@ public class GameWebSocket {
 
     public void notifyViewerStatus() {
         Map<Object, Object> body = new HashMap<>();
-        body.put("round", this.team.getViewingAt().getRoundHydrated(this));
-        body.put("viewers", this.team.getViewingAt().getViewersHydrated());
+        Team viewingAt = this.team.getViewingAt();
+        body.put("round", viewingAt == null ? null : viewingAt.getRoundHydrated(this));
+        body.put("viewers", this.team.getViewersHydrated());
         this.notifyClient("viewer_status", body);
     }
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
         this.session = session;
-        this.team = this.gameMechanics.addToTeam(this);
+        this.gameMechanics.addToTeam(this);
     }
 
     @OnWebSocketClose

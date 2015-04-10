@@ -37,7 +37,7 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     @Override
-    public Team addToTeam(GameWebSocket webSocket) {
+    public void addToTeam(GameWebSocket webSocket) {
         if (this.viewersTeam == null) {
             this.viewersTeam = new Team(this, this.teams.peekFirst());
         } else if (this.viewersTeam.getUsers().size() + 1 >= this.resource.judgesCount + 2) {
@@ -47,9 +47,7 @@ public class GameMechanicsImpl implements GameMechanics {
             users.add(webSocket);
             Team team = new Team(users, this);
             this.teams.add(team);
-            return team;
         }
         this.viewersTeam.add(webSocket);
-        return this.viewersTeam;
     }
 }

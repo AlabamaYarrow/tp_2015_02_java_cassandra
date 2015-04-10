@@ -2,6 +2,7 @@ package mechanics;
 
 import base.GameMechanics;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import frontend.GameWebSocket;
 
 import java.util.*;
@@ -32,6 +33,7 @@ public class Team {
         this.setViewingAt(toViewAt);
     }
 
+    @Nullable
     public Team getViewingAt() {
         return viewingAt;
     }
@@ -88,8 +90,8 @@ public class Team {
 
     public void add(GameWebSocket viewer) {
         this.users.add(viewer);
-        viewer.notifyViewerStatus();
         viewer.setTeam(this);
+        viewer.notifyViewerStatus();
     }
 
     public void notifyPlayerStatus() {
