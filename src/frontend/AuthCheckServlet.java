@@ -38,6 +38,6 @@ public class AuthCheckServlet extends HttpServlet {
         }
         json.put("status", status);
         response.setStatus(status);
-        response.getWriter().println(json.toJSONString());
+        response.getWriter().print(json.toJSONString());
     }
 }

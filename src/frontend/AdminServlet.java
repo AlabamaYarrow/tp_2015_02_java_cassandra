@@ -33,7 +33,7 @@ public class AdminServlet extends HttpServlet {
         pageVariables.put("registered_count", this.accountService.getUsersCount());
         pageVariables.put("online_count", this.accountService.getOnlineCount());
 
-        response.getWriter().println(this.pageGenerator.getPage(AdminServlet.TEMPLATE, pageVariables));
+        response.getWriter().print(this.pageGenerator.getPage(AdminServlet.TEMPLATE, pageVariables));
     }
 
     public void doPost(HttpServletRequest request,
@@ -56,6 +56,6 @@ public class AdminServlet extends HttpServlet {
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("stopping", true);
-        response.getWriter().println(this.pageGenerator.getPage(AdminServlet.TEMPLATE, pageVariables));
+        response.getWriter().print(this.pageGenerator.getPage(AdminServlet.TEMPLATE, pageVariables));
     }
 }

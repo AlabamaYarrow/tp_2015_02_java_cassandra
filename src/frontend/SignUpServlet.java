@@ -55,7 +55,7 @@ public class SignUpServlet extends ValidatedServlet {
         }
         json.put("status", status);
         response.setStatus(status);
-        response.getWriter().println(json.toJSONString());
+        response.getWriter().print(json.toJSONString());
     }
 
 }
