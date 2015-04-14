@@ -1,10 +1,14 @@
 package frontend;
 
 import base.GameMechanics;
+import base.Listenable;
+import base.Listener;
 import com.sun.istack.internal.Nullable;
 import main.UserProfile;
-import mechanics.Role;
-import mechanics.Team;
+import mechanics.Event;
+import mechanics.PlayersTeam;
+import mechanics.UnknownEventError;
+import mechanics.ViewersTeam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
@@ -17,42 +21,29 @@ import org.json.simple.JSONValue;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 @WebSocket
-public class GameWebSocket {
+public class GameWebSocket implements Listenable, Listener {
     private static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
     protected UserProfile userProfile;
     protected Session session;
-    protected Team team;
-    protected Role role;
     protected GameMechanics gameMechanics;
+    protected List<Listener> listeners = new Vector<>();
 
-    //protected WebSocketService webSocketService;
-    public GameWebSocket(UserProfile userProfile, GameMechanics gameMechanics/*, WebSocketService webSocketService*/) {
+    public GameWebSocket(UserProfile userProfile, GameMechanics gameMechanics) {
         this.userProfile = userProfile;
         this.gameMechanics = gameMechanics;
-        //this.webSocketService = webSocketService;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
     }
 
     public UserProfile getUserProfile() {
         return userProfile;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public void closeSession() {
+        this.session.close();
     }
 
     protected void notifyClient(String type, Map<Object, Object> body) {
@@ -66,56 +57,55 @@ public class GameWebSocket {
         }
     }
 
-    public void notifyChatMessage(UserProfile author, String text) {
+    protected void notifyClientChatMessage(UserProfile author, String text) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", author.getID());
         body.put("text", text);
         this.notifyClient("chat_stopped_typing", body);
     }
 
-    public void notifyChatStoppedTyping(UserProfile userProfile) {
+    protected void notifyClientChatStoppedTyping(UserProfile userProfile) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", userProfile.getID());
         this.notifyClient("chat_stopped_typing", body);
     }
 
-    public void notifyChatTyping(UserProfile userProfile) {
+    protected void notifyClientChatTyping(UserProfile userProfile) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", userProfile.getID());
         this.notifyClient("chat_typing", body);
     }
 
-    public void notifyPlayerStatus() {
-        this.notifyClient("player_status", this.team.getRoundHydrated(this));
+    protected void notifyClientPlayerStatus(PlayersTeam team) {
+        this.notifyClient("player_status", team.getRoundHydrated(this));
     }
 
-    public void notifyUserCome(UserProfile userProfile) {
+    protected void notifyClientUserCome(UserProfile userProfile) {
         this.notifyClient("user_come", userProfile.getHydrated());
     }
 
-    public void notifyUserGone(UserProfile userProfile) {
+    protected void notifyClientUserGone(UserProfile userProfile) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", userProfile.getID());
         this.notifyClient("user_gone", body);
     }
 
-    public void notifyViewerStatus() {
+    protected void notifyClientViewerStatus(PlayersTeam team, ViewersTeam viewersTeam) {
         Map<Object, Object> body = new HashMap<>();
-        Team viewingAt = this.team.getViewingAt();
-        body.put("round", viewingAt == null ? null : viewingAt.getRoundHydrated(this));
-        body.put("viewers", this.team.getViewersHydrated());
+        body.put("round", team.getRoundHydrated(null));
+        body.put("viewers", viewersTeam.getViewersHydrated());
         this.notifyClient("viewer_status", body);
     }
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
         this.session = session;
-        this.gameMechanics.addToTeam(this);
+        this.notifyListeners("connected", null);
     }
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        this.gameMechanics.onWebSocketClosed(this);
+        this.notifyListeners("closed", null);
     }
 
     @OnWebSocketMessage
@@ -132,45 +122,69 @@ public class GameWebSocket {
             return;
         }
         if ("chat_typing".equals(type)) {
-            if (this.role == Role.VIEWER) {
-                LOGGER.error("Viewer can't type chat messages.");
-                this.session.close();
-                return;
-            }
-            this.team.onChatTyping(this);
+            this.notifyListeners("chat_typing", null);
         } else if ("chat_stopped_typing".equals(type)) {
-            if (this.role == Role.VIEWER) {
-                LOGGER.error("Viewer can't type chat messages.");
-                this.session.close();
-                return;
-            }
-            this.team.onChatStoppedTyping(this);
+            this.notifyListeners("chat_stopped_typing", null);
         } else if ("chat_message".equals(type)) {
-            if (this.role == Role.VIEWER) {
-                LOGGER.error("Viewer can't send chat messages.");
-                this.session.close();
-                return;
-            }
             @Nullable String messageText;
             try {
                 messageText = (String) body.get("text");
             } catch (ClassCastException e) {
                 LOGGER.error("Chat message text should be of string type.", e);
-                this.session.close();
+                this.closeSession();
                 return;
             }
-            try {
-                this.team.onChatMessage(this, messageText);
-            } catch (NullPointerException e) {
-                LOGGER.error("Chat message can't be null.", e);
-                this.session.close();
+            if (messageText == null) {
+                LOGGER.error("Chat message can't be null.");
+                this.closeSession();
                 return;
             }
+            this.notifyListeners("chat_message", null);
         } else {
             LOGGER.error("Unknown WebSocket message type.");
-            this.session.close();
-            return;
+            this.closeSession();
         }
     }
 
+    protected void notifyListeners(String type, Object data) {
+        Event event = new Event(this, type, data);
+        for (Listener listener : this.listeners) {
+            listener.onEvent(event);
+        }
+    }
+
+    @Override
+    public void addListener(Listener listener) {
+        this.listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(Listener listener) {
+        this.listeners.remove(listener);
+    }
+
+    @Override
+    public void onEvent(Event event) {
+        String type = event.getType();
+        Map<Object, Object> body = new HashMap<>();
+        Map<Object, Object> data = (Map<Object, Object>) event.getData();
+        if ("user_come".equals(type)) {
+            this.notifyClientUserCome(((GameWebSocket) data.get("user")).getUserProfile());
+        } else if ("user_gone".equals(type)) {
+            this.notifyClientUserGone(((GameWebSocket) data.get("user")).getUserProfile());
+        } else if ("player_status".equals(type)) {
+            this.notifyClientPlayerStatus((PlayersTeam) event.getTarget());
+        } else if ("viewer_status".equals(type)) {
+            this.notifyClientViewerStatus((PlayersTeam) data.get("players"), (ViewersTeam) data.get("viewers"));
+        } else if ("chat_message".equals(type)) {
+            this.notifyClientChatMessage(((GameWebSocket) data.get("user")).getUserProfile(), (String) data.get("text"));
+        } else if ("chat_typing".equals(type)) {
+            this.notifyClientChatTyping(((GameWebSocket) data.get("user")).getUserProfile());
+        } else if ("chat_stopped_typing".equals(type)) {
+            this.notifyClientChatStoppedTyping(((GameWebSocket) data.get("user")).getUserProfile());
+        } else {
+            throw new UnknownEventError();
+        }
+        this.notifyClient(type, body);
+    }
 }
