@@ -15,8 +15,8 @@ public abstract class UserProfileTest extends ServletTest {
         return ++UserProfileTest.counter;
     }
 
-    protected HttpServletRequest getSignedInRequest(UserProfile user) throws Exception {
-        HttpServletRequest request = this.getMockedRequest();
+    protected HttpServletRequest getSignedInRequest(UserProfile user, String json) throws Exception {
+        HttpServletRequest request = this.getMockedRequest(json);
         this.accountService.signIn(request.getSession().getId(), user.getName(), "topsecret");
         return request;
     }

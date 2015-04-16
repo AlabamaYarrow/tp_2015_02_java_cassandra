@@ -27,7 +27,7 @@ public class AdminServletTest extends ServletTest {
         AdminServlet admin = new AdminServlet(accountService, pageGenerator, new Timer());
 
         HttpServletResponse response = this.getMockedResponse();
-        HttpServletRequest request = this.getMockedRequest();
+        HttpServletRequest request = this.getMockedRequest("");
 
         admin.doGet(request, response);
         Map<String, Object> map = new HashMap<>();
@@ -44,7 +44,7 @@ public class AdminServletTest extends ServletTest {
         AdminServlet admin = new AdminServlet(accountService, pageGenerator, timer);
 
         HttpServletResponse response = this.getMockedResponse();
-        HttpServletRequest request = this.getMockedRequest();
+        HttpServletRequest request = this.getMockedRequest("");
 
         admin.doPost(request, response);
         verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -58,7 +58,7 @@ public class AdminServletTest extends ServletTest {
         AdminServlet admin = new AdminServlet(accountService, pageGenerator, timer);
 
         HttpServletResponse response = this.getMockedResponse();
-        HttpServletRequest request = this.getMockedRequest();
+        HttpServletRequest request = this.getMockedRequest("");
         final Long DELAY = 31416L;
         when(request.getParameter("delay")).thenReturn(DELAY.toString());
 

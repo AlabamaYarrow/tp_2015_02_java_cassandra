@@ -25,10 +25,9 @@ public class SignUpServletTest extends UserProfileTest {
         when(user.getID()).thenReturn(99900);
         when(user.getEmail()).thenReturn(EMAIL);
         when(user.getName()).thenReturn(NAME);
-        HttpServletRequest request = this.getMockedRequest();
-        when(request.getParameter("email")).thenReturn(EMAIL);
-        when(request.getParameter("name")).thenReturn(NAME);
         /* Password isn't specified. */
+        String requestJson = String.format("{ \"email\": \"%s\", \"name\": \"%s\" }", user.getEmail(), user.getName());
+        HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signUp.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());
@@ -46,10 +45,8 @@ public class SignUpServletTest extends UserProfileTest {
 
         HttpServletResponse response = this.getMockedResponse();
         UserProfile user = this.createUserProfile();
-        HttpServletRequest request = this.getMockedRequest();
-        when(request.getParameter("email")).thenReturn(user.getEmail());
-        when(request.getParameter("name")).thenReturn(user.getName());
-        when(request.getParameter("password")).thenReturn("topsecret");
+        String requestJson = String.format("{ \"email\": \"%s\", \"name\": \"%s\", \"password\": \"topsecret\" }", user.getEmail(), user.getName());
+        HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signUp.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());
@@ -67,7 +64,7 @@ public class SignUpServletTest extends UserProfileTest {
 
         HttpServletResponse response = this.getMockedResponse();
         UserProfile user = this.createUserProfile();
-        HttpServletRequest request = this.getSignedInRequest(user);
+        HttpServletRequest request = this.getSignedInRequest(user, "");
 
         signUp.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());
@@ -88,10 +85,8 @@ public class SignUpServletTest extends UserProfileTest {
         when(user.getID()).thenReturn(99901);
         when(user.getEmail()).thenReturn(EMAIL);
         when(user.getName()).thenReturn(NAME);
-        HttpServletRequest request = this.getMockedRequest();
-        when(request.getParameter("email")).thenReturn(EMAIL);
-        when(request.getParameter("name")).thenReturn(NAME);
-        when(request.getParameter("password")).thenReturn("topsecret");
+        String requestJson = String.format("{ \"email\": \"%s\", \"name\": \"%s\", \"password\": \"topsecret\" }", EMAIL, NAME);
+        HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signUp.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());

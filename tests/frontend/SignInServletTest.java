@@ -8,27 +8,26 @@ import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import static org.mockito.Mockito.when;
+import java.util.Map;
 
 public class SignInServletTest extends UserProfileTest {
 
     @Test
-    public void testDoPostBadRequest() throws Exception {
+    public void testDoPostNoPassword() throws Exception {
         SignInServlet signIn = new SignInServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
         UserProfile user = this.createUserProfile();
-        HttpServletRequest request = this.getMockedRequest();
-        when(request.getParameter("name")).thenReturn(user.getName());
         /* Password isn't specified. */
+        String requestJson = String.format("{ \"name\": \"%s\" }", user.getName());
+        HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signIn.doPost(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
+        Map<Object, Object> json = (Map<Object, Object>) JSONValue.parse(response.toString());
         this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response, json);
 
-        JSONObject body = (JSONObject) json.get("body");
-        JSONObject error = (JSONObject) body.get("password");
+        Map<Object, Object> body = (Map<Object, Object>) json.get("body");
+        Map<Object, Object> error = (Map<Object, Object>) body.get("password");
         assertEquals("required", error.get("error"));
         assertNull(error.get("value"));
     }
@@ -39,7 +38,7 @@ public class SignInServletTest extends UserProfileTest {
 
         HttpServletResponse response = this.getMockedResponse();
         UserProfile user = this.createUserProfile();
-        HttpServletRequest request = this.getSignedInRequest(user);
+        HttpServletRequest request = this.getSignedInRequest(user, "");
 
         signIn.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());
@@ -55,9 +54,8 @@ public class SignInServletTest extends UserProfileTest {
 
         HttpServletResponse response = this.getMockedResponse();
         UserProfile user = this.createUserProfile();
-        HttpServletRequest request = this.getMockedRequest();
-        when(request.getParameter("name")).thenReturn(user.getName());
-        when(request.getParameter("password")).thenReturn("topsecret");
+        String requestJson = String.format("{ \"name\": \"%s\", \"password\": \"topsecret\" }", user.getName());
+        HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signIn.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());
@@ -73,9 +71,8 @@ public class SignInServletTest extends UserProfileTest {
 
         HttpServletResponse response = this.getMockedResponse();
         UserProfile user = this.createUserProfile();
-        HttpServletRequest request = this.getMockedRequest();
-        when(request.getParameter("name")).thenReturn(user.getName());
-        when(request.getParameter("password")).thenReturn("not_a_secret");
+        String requestJson = String.format("{ \"name\": \"%s\", \"password\": \"not_a_secret\" }", user.getName());
+        HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signIn.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());

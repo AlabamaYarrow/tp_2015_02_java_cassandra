@@ -6,6 +6,7 @@ import main.NoUserException;
 import main.SignInException;
 import main.UserProfile;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,18 +39,19 @@ public class SignInServlet extends ValidatedServlet {
             status = HttpServletResponse.SC_FORBIDDEN;
             jsonBody.put("message", "You're already authorized.");
         } catch (NoUserException e) {
-            if (!this.areRequiredFieldsValid(request, jsonBody)) {
-                status = HttpServletResponse.SC_BAD_REQUEST;
-            } else {
-                String name = request.getParameter("name");
+            Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
+            if (this.areRequiredFieldsValid(requestJson, jsonBody)) {
+                String name = (String) requestJson.get("name");
                 String sid = request.getSession().getId();
                 try {
-                    user = this.accountService.signIn(sid, name, request.getParameter("password"));
+                    user = this.accountService.signIn(sid, name, (String) requestJson.get("password"));
                     user.hydrate(jsonBody);
                 } catch (SignInException e1) {
                     status = HttpServletResponse.SC_UNAUTHORIZED;
                     jsonBody.put("message", "Incorrect username or password.");
                 }
+            } else {
+                status = HttpServletResponse.SC_BAD_REQUEST;
             }
         }
         json.put("status", status);

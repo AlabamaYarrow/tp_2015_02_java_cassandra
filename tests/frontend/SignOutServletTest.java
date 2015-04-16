@@ -17,7 +17,7 @@ public class SignOutServletTest extends UserProfileTest {
 
         HttpServletResponse response = this.getMockedResponse();
         UserProfile user = this.createUserProfile();
-        HttpServletRequest request = this.getSignedInRequest(user);
+        HttpServletRequest request = this.getSignedInRequest(user, "");
 
         signOut.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());
@@ -32,7 +32,7 @@ public class SignOutServletTest extends UserProfileTest {
         SignOutServlet signOut = new SignOutServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        HttpServletRequest request = this.getMockedRequest();
+        HttpServletRequest request = this.getMockedRequest("");
 
         signOut.doPost(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());

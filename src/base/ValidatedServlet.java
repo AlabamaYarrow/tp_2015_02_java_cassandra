@@ -1,7 +1,6 @@
 package base;
 
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +15,23 @@ public class ValidatedServlet extends HttpServlet {
     /**
      * @return isValid
      */
-    protected boolean areRequiredFieldsValid(HttpServletRequest request, Map<Object, Object> jsonBody) {
+    protected boolean areRequiredFieldsValid(Map<Object, Object> request, Map<Object, Object> jsonBody) {
         boolean isValid = true;
         for (String name : this.REQUIRED_FIELDS) {
-            String value = request.getParameter(name);
+            Object valueObj = request.get(name);
+            String value;
+            try {
+                value = (String) valueObj;
+            } catch (ClassCastException e) {
+                isValid = false;
+                Map<Object, Object> error = new HashMap<>();
+                jsonBody.put(name, error);
+                error.put("error", "wrong_type");
+                if (!"password".equals(name)) {
+                    error.put("value", valueObj);
+                }
+                continue;
+            }
             if (null == value || value.isEmpty()) {
                 isValid = false;
                 Map<Object, Object> error = new HashMap<>();

@@ -5,6 +5,7 @@ import base.ValidatedServlet;
 import main.NoUserException;
 import main.UserProfile;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,9 +38,10 @@ public class SignUpServlet extends ValidatedServlet {
             status = HttpServletResponse.SC_FORBIDDEN;
             jsonBody.put("message", "You're already authorized.");
         } catch (NoUserException e) {
-            if (this.areRequiredFieldsValid(request, jsonBody)) {
-                String name = request.getParameter("name");
-                user = new UserProfile(request.getParameter("email"), name, request.getParameter("password"));
+            Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
+            if (this.areRequiredFieldsValid(requestJson, jsonBody)) {
+                String name = (String) requestJson.get("name");
+                user = new UserProfile((String) requestJson.get("email"), name, (String) requestJson.get("password"));
                 if (accountService.addUser(user)) {
                     user.hydrate(jsonBody);
                 } else {

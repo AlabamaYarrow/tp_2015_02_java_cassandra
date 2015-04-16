@@ -17,7 +17,7 @@ public class AuthCheckServletTest extends UserProfileTest {
 
         HttpServletResponse response = this.getMockedResponse();
         UserProfile user = this.createUserProfile();
-        HttpServletRequest request = this.getSignedInRequest(user);
+        HttpServletRequest request = this.getSignedInRequest(user, "");
 
         authCheck.doGet(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());
@@ -32,7 +32,7 @@ public class AuthCheckServletTest extends UserProfileTest {
         AuthCheckServlet authCheck = new AuthCheckServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        HttpServletRequest request = this.getMockedRequest();
+        HttpServletRequest request = this.getMockedRequest("");
 
         authCheck.doGet(request, response);
         JSONObject json = (JSONObject) JSONValue.parse(response.toString());
