@@ -15,28 +15,72 @@ import static org.mockito.Mockito.when;
 public class SignUpServletTest extends UserProfileTest {
 
     @Test
-    public void testDoPostBadRequest() throws Exception {
+    public void testDoPostNoPassword() throws Exception {
         SignUpServlet signUp = new SignUpServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = mock(UserProfile.class);
-        final String EMAIL = "paul@mail.com";
-        final String NAME = "Paul";
-        when(user.getID()).thenReturn(99900);
-        when(user.getEmail()).thenReturn(EMAIL);
-        when(user.getName()).thenReturn(NAME);
         /* Password isn't specified. */
-        String requestJson = String.format("{ \"email\": \"%s\", \"name\": \"%s\" }", user.getEmail(), user.getName());
+        String requestJson = "{ \"email\": \"paul@mail.com\", \"name\": \"Paul\" }";
         HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signUp.doPost(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         JSONObject error = (JSONObject) body.get("password");
         assertEquals("required", error.get("error"));
         assertNull(error.get("value"));
+    }
+
+    @Test
+    public void testDoPostInvalidPassword() throws Exception {
+        SignUpServlet signUp = new SignUpServlet(this.accountService);
+
+        HttpServletResponse response = this.getMockedResponse();
+        /* Password is a number. */
+        String requestJson = "{ \"email\": \"paul@mail.com\", \"name\": \"Paul\", \"password\": 31415 }";
+        HttpServletRequest request = this.getMockedRequest(requestJson);
+
+        signUp.doPost(request, response);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
+
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
+        JSONObject body = (JSONObject) json.get("body");
+        JSONObject error = (JSONObject) body.get("password");
+        assertEquals("wrong_type", error.get("error"));
+        assertNull(error.get("value"));
+    }
+
+    @Test
+    public void testDoPostInvalidName() throws Exception {
+        SignUpServlet signUp = new SignUpServlet(this.accountService);
+
+        HttpServletResponse response = this.getMockedResponse();
+        /* Name is a number. */
+        final long INVALID_NAME = 31415;
+        String requestJson = String.format("{ \"email\": \"paul@mail.com\", \"name\": %d, \"password\": \"topsecret\" }", INVALID_NAME);
+        HttpServletRequest request = this.getMockedRequest(requestJson);
+
+        signUp.doPost(request, response);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
+
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
+        JSONObject body = (JSONObject) json.get("body");
+        JSONObject error = (JSONObject) body.get("name");
+        assertEquals("wrong_type", error.get("error"));
+        assertEquals(INVALID_NAME, error.get("value"));
+    }
+
+    @Test
+    public void testDoPostInvalidJson() throws Exception {
+        SignUpServlet signUp = new SignUpServlet(this.accountService);
+
+        HttpServletResponse response = this.getMockedResponse();
+        HttpServletRequest request = this.getMockedRequest("not a json string");
+
+        signUp.doPost(request, response);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
     }
 
     @Test
@@ -49,9 +93,9 @@ public class SignUpServletTest extends UserProfileTest {
         HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signUp.doPost(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         JSONObject error = (JSONObject) body.get("name");
         assertEquals("already_exists", error.get("error"));
@@ -67,9 +111,9 @@ public class SignUpServletTest extends UserProfileTest {
         HttpServletRequest request = this.getSignedInRequest(user, "");
 
         signUp.doPost(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_FORBIDDEN, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_FORBIDDEN, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         assertNotNull(body);
     }
@@ -89,9 +133,9 @@ public class SignUpServletTest extends UserProfileTest {
         HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signUp.doPost(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_OK, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_OK, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         this.checkUserProfileHydrated(user, body);
     }

@@ -39,7 +39,7 @@ public class SignUpServlet extends ValidatedServlet {
             jsonBody.put("message", "You're already authorized.");
         } catch (NoUserException e) {
             Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
-            if (this.areRequiredFieldsValid(requestJson, jsonBody)) {
+            if (requestJson != null && this.areRequiredFieldsValid(requestJson, jsonBody)) {
                 String name = (String) requestJson.get("name");
                 user = new UserProfile((String) requestJson.get("email"), name, (String) requestJson.get("password"));
                 if (accountService.addUser(user)) {

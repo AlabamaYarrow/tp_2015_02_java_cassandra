@@ -40,7 +40,7 @@ public class SignInServlet extends ValidatedServlet {
             jsonBody.put("message", "You're already authorized.");
         } catch (NoUserException e) {
             Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
-            if (this.areRequiredFieldsValid(requestJson, jsonBody)) {
+            if (requestJson != null && this.areRequiredFieldsValid(requestJson, jsonBody)) {
                 String name = (String) requestJson.get("name");
                 String sid = request.getSession().getId();
                 try {

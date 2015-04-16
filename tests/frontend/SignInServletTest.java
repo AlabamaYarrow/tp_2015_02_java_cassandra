@@ -17,19 +17,68 @@ public class SignInServletTest extends UserProfileTest {
         SignInServlet signIn = new SignInServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = this.createUserProfile();
         /* Password isn't specified. */
-        String requestJson = String.format("{ \"name\": \"%s\" }", user.getName());
+        String requestJson = String.format("{ \"name\": \"Paul\" }");
         HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signIn.doPost(request, response);
-        Map<Object, Object> json = (Map<Object, Object>) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
 
+        Map<Object, Object> json = (Map<Object, Object>) JSONValue.parse(response.toString());
         Map<Object, Object> body = (Map<Object, Object>) json.get("body");
         Map<Object, Object> error = (Map<Object, Object>) body.get("password");
         assertEquals("required", error.get("error"));
         assertNull(error.get("value"));
+    }
+
+    @Test
+    public void testDoPostInvalidJson() throws Exception {
+        SignInServlet signIn = new SignInServlet(this.accountService);
+
+        HttpServletResponse response = this.getMockedResponse();
+        HttpServletRequest request = this.getMockedRequest("not a json");
+
+        signIn.doPost(request, response);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
+    }
+
+    @Test
+    public void testDoPostInvalidPassword() throws Exception {
+        SignInServlet signIn = new SignInServlet(this.accountService);
+
+        HttpServletResponse response = this.getMockedResponse();
+        /* Password is a number. */
+        String requestJson = String.format("{ \"name\": \"Paul\", \"password\": 31415 }");
+        HttpServletRequest request = this.getMockedRequest(requestJson);
+
+        signIn.doPost(request, response);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
+
+        Map<Object, Object> json = (Map<Object, Object>) JSONValue.parse(response.toString());
+        Map<Object, Object> body = (Map<Object, Object>) json.get("body");
+        Map<Object, Object> error = (Map<Object, Object>) body.get("password");
+        assertEquals("wrong_type", error.get("error"));
+        assertNull(error.get("value"));
+    }
+
+    @Test
+    public void testDoPostInvalidName() throws Exception {
+        SignInServlet signIn = new SignInServlet(this.accountService);
+
+        HttpServletResponse response = this.getMockedResponse();
+        /* Name is a number. */
+        final long INVALID_NAME = 31415;
+        String requestJson = String.format("{ \"name\": %d, \"password\": \"topsecret\" }", INVALID_NAME);
+        HttpServletRequest request = this.getMockedRequest(requestJson);
+
+        signIn.doPost(request, response);
+        this.checkStatusCode(HttpServletResponse.SC_BAD_REQUEST, response);
+
+        Map<Object, Object> json = (Map<Object, Object>) JSONValue.parse(response.toString());
+        Map<Object, Object> body = (Map<Object, Object>) json.get("body");
+        Map<Object, Object> error = (Map<Object, Object>) body.get("name");
+        assertEquals("wrong_type", error.get("error"));
+        assertEquals(INVALID_NAME, error.get("value"));
     }
 
     @Test
@@ -41,9 +90,9 @@ public class SignInServletTest extends UserProfileTest {
         HttpServletRequest request = this.getSignedInRequest(user, "");
 
         signIn.doPost(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_FORBIDDEN, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_FORBIDDEN, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         assertNotNull(body);
     }
@@ -58,9 +107,9 @@ public class SignInServletTest extends UserProfileTest {
         HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signIn.doPost(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_OK, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_OK, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         this.checkUserProfileHydrated(user, body);
     }
@@ -75,9 +124,9 @@ public class SignInServletTest extends UserProfileTest {
         HttpServletRequest request = this.getMockedRequest(requestJson);
 
         signIn.doPost(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_UNAUTHORIZED, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_UNAUTHORIZED, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         assertNotNull(body.get("message"));
     }

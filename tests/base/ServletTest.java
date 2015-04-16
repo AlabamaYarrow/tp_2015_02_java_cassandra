@@ -1,6 +1,7 @@
 package base;
 
 import junit.framework.TestCase;
+import org.json.simple.JSONValue;
 import org.mockito.invocation.InvocationOnMock;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,8 @@ import static org.mockito.Mockito.*;
 
 public abstract class ServletTest extends TestCase {
 
-    protected void checkStatusCode(int statusCode, HttpServletResponse response, Map<Object, Object> json) {
+    protected void checkStatusCode(int statusCode, HttpServletResponse response) {
+        Map<Object, Object> json = (Map<Object, Object>) JSONValue.parse(response.toString());
         verify(response).setStatus(statusCode);
         assertEquals((long) statusCode, json.get("status"));
     }

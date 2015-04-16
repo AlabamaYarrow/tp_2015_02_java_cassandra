@@ -20,9 +20,9 @@ public class AuthCheckServletTest extends UserProfileTest {
         HttpServletRequest request = this.getSignedInRequest(user, "");
 
         authCheck.doGet(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_OK, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_OK, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         this.checkUserProfileHydrated(user, body);
     }
@@ -35,9 +35,9 @@ public class AuthCheckServletTest extends UserProfileTest {
         HttpServletRequest request = this.getMockedRequest("");
 
         authCheck.doGet(request, response);
-        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
-        this.checkStatusCode(HttpServletResponse.SC_UNAUTHORIZED, response, json);
+        this.checkStatusCode(HttpServletResponse.SC_UNAUTHORIZED, response);
 
+        JSONObject json = (JSONObject) JSONValue.parse(response.toString());
         JSONObject body = (JSONObject) json.get("body");
         assertNotNull(body);
     }
