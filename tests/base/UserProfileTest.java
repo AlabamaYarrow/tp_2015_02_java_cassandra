@@ -1,13 +1,17 @@
 package base;
 
 import main.AccountServiceImpl;
+import main.AuthException;
 import main.UserProfile;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public abstract class UserProfileTest extends ServletTest {
 
+    protected static final Logger LOGGER = LogManager.getLogger(UserProfileTest.class);
     protected static int counter = 0;
     protected AccountService accountService = new AccountServiceImpl();
 
@@ -23,7 +27,11 @@ public abstract class UserProfileTest extends ServletTest {
 
     protected UserProfile createUserProfile() {
         UserProfile user = new UserProfile("john" + UserProfileTest.getUniqueCounter() + "@mail.com", "john" + UserProfileTest.getUniqueCounter(), "topsecret");
-        this.accountService.addUser(user);
+        try {
+            this.accountService.addUser(user);
+        } catch (AuthException e) {
+            LOGGER.error(e);
+        }
         return user;
     }
 

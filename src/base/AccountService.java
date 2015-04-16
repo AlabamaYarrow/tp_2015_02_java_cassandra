@@ -1,8 +1,8 @@
 package base;
 
 import com.sun.istack.internal.NotNull;
+import main.AuthException;
 import main.NoUserException;
-import main.SignInException;
 import main.UserProfile;
 
 public interface AccountService {
@@ -10,8 +10,10 @@ public interface AccountService {
     @NotNull
     UserProfile getUser(String sid) throws NoUserException;
 
+    boolean isAuthorized(String sid);
+
     @NotNull
-    UserProfile signIn(String sid, String name, String password) throws SignInException;
+    UserProfile signIn(String sid, String name, String password) throws AuthException;
 
     long getUsersCount();
 
@@ -19,7 +21,7 @@ public interface AccountService {
 
     void signOut(String sid) throws NoUserException;
 
-    boolean addUser(@NotNull UserProfile newUser);
+    void addUser(@NotNull UserProfile newUser) throws AuthException;
 
     @NotNull
     UserProfile getUserByName(String name) throws NoUserException;

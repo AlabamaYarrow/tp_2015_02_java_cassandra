@@ -2,7 +2,7 @@ package frontend;
 
 import base.AccountService;
 import base.ValidatedServlet;
-import main.NoUserException;
+import main.AuthException;
 import main.UserProfile;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -32,19 +32,18 @@ public class SignUpServlet extends ValidatedServlet {
 
         int status = HttpServletResponse.SC_OK;
 
-        UserProfile user;
-        try {
-            user = this.accountService.getUser(request.getSession().getId());
+        if (this.accountService.isAuthorized(request.getSession().getId())) {
             status = HttpServletResponse.SC_FORBIDDEN;
             jsonBody.put("message", "You're already authorized.");
-        } catch (NoUserException e) {
+        } else {
             Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
             if (requestJson != null && this.areRequiredFieldsValid(requestJson, jsonBody)) {
                 String name = (String) requestJson.get("name");
-                user = new UserProfile((String) requestJson.get("email"), name, (String) requestJson.get("password"));
-                if (accountService.addUser(user)) {
+                UserProfile user = new UserProfile((String) requestJson.get("email"), name, (String) requestJson.get("password"));
+                try {
+                    accountService.addUser(user);
                     user.hydrate(jsonBody);
-                } else {
+                } catch (AuthException e) {
                     status = HttpServletResponse.SC_BAD_REQUEST;
                     Map<Object, Object> nameError = new HashMap<>();
                     jsonBody.put("name", nameError);

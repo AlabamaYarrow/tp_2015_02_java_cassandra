@@ -18,6 +18,14 @@ public class AccountServiceImplTest extends TestCase {
     @Mock
     protected UserProfile user;
 
+    public void testIsAuthorized() throws Exception {
+        AccountService accountService = new AccountServiceImpl();
+        accountService.addUser(this.user);
+        assertFalse(accountService.isAuthorized(SID));
+        accountService.signIn(SID, this.user.getName(), "topsecret");
+        assertTrue(accountService.isAuthorized(SID));
+    }
+
     @Before
     public void setUp() {
         when(user.checkPassword("topsecret")).thenReturn(true);
@@ -59,11 +67,11 @@ public class AccountServiceImplTest extends TestCase {
         assertEquals(1, accountService.getUsersCount());
     }
 
-    @Test
+    @Test(expected = AuthException.class)
     public void testAddUserAlreadyExists() throws Exception {
         AccountService accountService = new AccountServiceImpl();
-        assertTrue(accountService.addUser(this.user));
-        assertFalse(accountService.addUser(this.user));
+        accountService.addUser(this.user);
+        accountService.addUser(this.user);
     }
 
     @Test(expected = NullPointerException.class)
@@ -85,14 +93,14 @@ public class AccountServiceImplTest extends TestCase {
         accountService.getUser(SID);
     }
 
-    @Test(expected = SignInException.class)
+    @Test(expected = AuthException.class)
     public void testSignInBadName() throws Exception {
         AccountService accountService = new AccountServiceImpl();
         accountService.addUser(this.user);
         accountService.signIn(SID, "some name", "topsecret");
     }
 
-    @Test(expected = SignInException.class)
+    @Test(expected = AuthException.class)
     public void testSignInBadPassword() throws Exception {
         AccountService accountService = new AccountServiceImpl();
         accountService.addUser(this.user);
