@@ -6,7 +6,10 @@ import frontend.GameWebSocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 public class ViewersTeam extends Team {
 
@@ -14,8 +17,8 @@ public class ViewersTeam extends Team {
 
     public List<Object> getViewersHydrated() {
         List<Object> viewers = new Vector<>();
-        for (Iterator<GameWebSocket> iterator = this.users.iterator(); iterator.hasNext(); ) {
-            viewers.add(iterator.next().getUserProfile().getHydrated());
+        for (GameWebSocket user : this.users) {
+            viewers.add(user.getUserProfile().getHydrated());
         }
         return viewers;
     }
@@ -49,7 +52,6 @@ public class ViewersTeam extends Team {
     public void add(GameWebSocket viewer) {
         this.users.add(viewer);
         viewer.addListener(this);
-        viewer.notifyClientViewerStatus();
     }
 
     public void remove(GameWebSocket webSocket) {

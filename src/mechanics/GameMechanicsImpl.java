@@ -58,14 +58,14 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     protected void onWebSocketConnected(GameWebSocket webSocket) {
-        if (this.viewersTeam.getUsers().size() + 1 >= this.resource.judgesCount + 2) {
-            this.viewersTeam.setViewingAt(null);
-            List<GameWebSocket> users = this.viewersTeam.getUsers();
-            this.viewersTeam = null;
+        List<GameWebSocket> users = this.viewersTeam.getUsers();
+        if (users.size() + 1 >= this.resource.judgesCount + 2) {
+            this.viewersTeam.flush();
             users.add(webSocket);
-            Team team = new Team(users, this);
+            PlayersTeam team = new PlayersTeam(users);
             this.teams.add(team);
+        } else {
+            this.viewersTeam.add(webSocket);
         }
-        this.viewersTeam.add(webSocket);
     }
 }

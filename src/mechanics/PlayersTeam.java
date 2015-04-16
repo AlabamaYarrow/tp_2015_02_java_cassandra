@@ -56,19 +56,19 @@ public class PlayersTeam extends Team implements Listenable {
     }
 
     protected void onChatTyping(GameWebSocket player) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("player", player)
+        Map<Object, Object> data = new HashMap<>();
+        data.put("player", player);
         this.notifyListeners("chat_typing", data);
     }
 
     protected void onChatStoppedTyping(GameWebSocket player) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("player", player)
+        Map<Object, Object> data = new HashMap<>();
+        data.put("player", player);
         this.notifyListeners("chat_stopped_typing", data);
     }
 
     protected void onChatMessage(@NotNull GameWebSocket player, @NotNull String text) {
-        Map<String, Object> map = new HashMap<>();
+        Map<Object, Object> map = new HashMap<>();
         map.put("player", player);
         map.put("text", text);
         this.notifyListeners("chat_message", map);
