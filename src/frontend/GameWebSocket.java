@@ -8,7 +8,6 @@ import main.UserProfile;
 import mechanics.Event;
 import mechanics.PlayersTeam;
 import mechanics.UnknownEventError;
-import mechanics.ViewersTeam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
@@ -23,7 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @WebSocket
 public class GameWebSocket implements Listenable, Listener {
@@ -31,7 +30,7 @@ public class GameWebSocket implements Listenable, Listener {
     protected UserProfile userProfile;
     protected Session session;
     protected GameMechanics gameMechanics;
-    protected List<Listener> listeners = new Vector<>();
+    protected List<Listener> listeners = new CopyOnWriteArrayList<>();
 
     public GameWebSocket(UserProfile userProfile, GameMechanics gameMechanics) {
         this.userProfile = userProfile;
@@ -90,10 +89,10 @@ public class GameWebSocket implements Listenable, Listener {
         this.notifyClient("user_gone", body);
     }
 
-    protected void notifyClientViewerStatus(PlayersTeam team, ViewersTeam viewersTeam) {
+    protected void notifyClientViewerStatus(Map<Object, Object> players, List<Object> viewers) {
         Map<Object, Object> body = new HashMap<>();
-        body.put("round", team.getRoundHydrated(null));
-        body.put("viewers", viewersTeam.getViewersHydrated());
+        body.put("round", players);
+        body.put("viewers", viewers);
         this.notifyClient("viewer_status", body);
     }
 
@@ -146,7 +145,7 @@ public class GameWebSocket implements Listenable, Listener {
         }
     }
 
-    protected void notifyListeners(String type, Object data) {
+    protected void notifyListeners(String type, Map<Object, Object> data) {
         Event event = new Event(this, type, data);
         for (Listener listener : this.listeners) {
             listener.onEvent(event);
@@ -166,16 +165,15 @@ public class GameWebSocket implements Listenable, Listener {
     @Override
     public void onEvent(Event event) {
         String type = event.getType();
-        Map<Object, Object> body = new HashMap<>();
-        Map<Object, Object> data = (Map<Object, Object>) event.getData();
-        if ("user_come".equals(type)) {
-            this.notifyClientUserCome(((GameWebSocket) data.get("user")).getUserProfile());
-        } else if ("user_gone".equals(type)) {
-            this.notifyClientUserGone(((GameWebSocket) data.get("user")).getUserProfile());
+        Map<Object, Object> data = event.getData();
+        if ("connected".equals(type)) {
+            this.notifyClientUserCome(((GameWebSocket) event.getTarget()).getUserProfile());
+        } else if ("closed".equals(type)) {
+            this.notifyClientUserGone(((GameWebSocket) event.getTarget()).getUserProfile());
         } else if ("player_status".equals(type)) {
             this.notifyClientPlayerStatus((PlayersTeam) event.getTarget());
         } else if ("viewer_status".equals(type)) {
-            this.notifyClientViewerStatus((PlayersTeam) data.get("players"), (ViewersTeam) data.get("viewers"));
+            this.notifyClientViewerStatus((Map<Object, Object>) data.get("players"), (List<Object>) data.get("viewers"));
         } else if ("chat_message".equals(type)) {
             this.notifyClientChatMessage(((GameWebSocket) data.get("user")).getUserProfile(), (String) data.get("text"));
         } else if ("chat_typing".equals(type)) {
@@ -185,6 +183,5 @@ public class GameWebSocket implements Listenable, Listener {
         } else {
             throw new UnknownEventError();
         }
-        this.notifyClient(type, body);
     }
 }

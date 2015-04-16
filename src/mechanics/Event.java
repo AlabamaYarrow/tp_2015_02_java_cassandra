@@ -2,12 +2,14 @@ package mechanics;
 
 import base.Listenable;
 
+import java.util.Map;
+
 public class Event {
     protected Listenable target;
     protected String type;
-    protected Object data;
+    protected Map<Object, Object> data;
 
-    public Event(Listenable target, String type, Object data) {
+    public Event(Listenable target, String type, Map<Object, Object> data) {
         this.target = target;
         this.type = type;
         this.data = data;
@@ -21,7 +23,7 @@ public class Event {
         return this.type;
     }
 
-    public Object getData() {
+    public Map<Object, Object> getData() {
         return this.data;
     }
 }

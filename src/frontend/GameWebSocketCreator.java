@@ -30,6 +30,7 @@ public class GameWebSocketCreator implements WebSocketCreator {
         try {
             UserProfile user = this.accountService.getUser(sid);
             GameWebSocket webSocket = new GameWebSocket(user, this.gameMechanics/*, this.webSocketService*/);
+            webSocket.addListener(this.gameMechanics);
             return webSocket;
         } catch (NoUserException e) {
             LOGGER.error("GameWebSocketCreator accepts only authorized users.", e);

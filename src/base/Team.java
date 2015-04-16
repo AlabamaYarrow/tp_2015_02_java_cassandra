@@ -1,10 +1,12 @@
 package base;
 
+import com.sun.istack.internal.Nullable;
 import frontend.GameWebSocket;
 import mechanics.Event;
+import mechanics.PlayersTeam;
 import mechanics.UnknownEventError;
 
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -17,9 +19,12 @@ public abstract class Team implements Listener {
         return new Vector<>(this.users);
     }
 
-    public void flush() {
-        for (Iterator<GameWebSocket> iterator = this.users.iterator(); iterator.hasNext(); ) {
-            iterator.next().removeListener(this);
+    public void flush(@Nullable PlayersTeam playersTeam) {
+        Map<Object, Object> data = new HashMap<>();
+        data.put("players", playersTeam);
+        this.notifyListeners("flush", data);
+        for (GameWebSocket user : this.users) {
+            user.removeListener(this);
         }
         this.users.clear();
     }
@@ -38,19 +43,15 @@ public abstract class Team implements Listener {
             } else if ("chat_stopped_typing".equals(type)) {
                 this.onChatStoppedTyping(webSocket);
             } else if ("chat_message".equals(type)) {
-                this.onChatMessage(webSocket, (String) event.getData());
+                this.onChatMessage(webSocket, (String) event.getData().get("text"));
             }
         } else {
             throw new UnknownEventError();
         }
     }
 
-    private void onClosed(GameWebSocket webSocket) {
+    protected void onClosed(GameWebSocket webSocket) {
         this.notifyListeners("user_gone", null);
-    }
-
-    private void onConnected(GameWebSocket webSocket) {
-        this.notifyListeners("user_come", null);
     }
 
     protected abstract void onChatTyping(GameWebSocket webSocket);
@@ -58,6 +59,14 @@ public abstract class Team implements Listener {
     protected abstract void onChatStoppedTyping(GameWebSocket webSocket);
 
     protected abstract void onChatMessage(GameWebSocket webSocket, String text);
+
+    protected void onConnected(GameWebSocket webSocket) {
+        Event connectedEvent = new Event(webSocket, "connected", null);
+        this.users.stream()
+                .filter(player -> player != webSocket)
+                .forEach(player -> player.onEvent(connectedEvent))
+        ;
+    }
 
     protected abstract void notifyListeners(String type, Map<Object, Object> data);
 }

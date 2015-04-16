@@ -10,17 +10,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class ViewersTeam extends Team {
 
     protected static final Logger LOGGER = LogManager.getLogger(ViewersTeam.class);
+    protected PlayersTeam players;
 
     public List<Object> getViewersHydrated() {
-        List<Object> viewers = new Vector<>();
-        for (GameWebSocket user : this.users) {
-            viewers.add(user.getUserProfile().getHydrated());
-        }
-        return viewers;
+        return this.users.stream()
+                .map(user -> user.getUserProfile().getHydrated())
+                .collect(Collectors.toCollection(Vector::new))
+                ;
     }
 
     @Override
@@ -29,13 +30,14 @@ public class ViewersTeam extends Team {
         if (target instanceof PlayersTeam) {
             String type = event.getType();
             Map<Object, Object> map = new HashMap<>();
-            Object data = event.getData();
             if ("player_status".equals(type)) {
                 type = "viewer_status";
-                map.put("players", target);
+                map.put("players", ((PlayersTeam) target).getRoundHydrated(null));
                 map.put("viewers", this);
+                this.notifyListeners(type, map);
+            } else if ("flush".equals(type)) {
+                this.onPlayersFlush((PlayersTeam) event.getData());
             }
-            this.notifyListeners(type, map);
         } else {
             super.onEvent(event);
         }
@@ -44,14 +46,14 @@ public class ViewersTeam extends Team {
     @Override
     protected void notifyListeners(String type, Map<Object, Object> map) {
         Event event = new Event(null, type, map);
-        for (GameWebSocket webSocket : this.users) {
-            webSocket.onEvent(event);
-        }
+        this.users.stream().forEach(webSocket -> webSocket.onEvent(event));
     }
 
     public void add(GameWebSocket viewer) {
         this.users.add(viewer);
         viewer.addListener(this);
+        Event event = new Event(viewer, "connected", null);
+        this.onEvent(event);
     }
 
     public void remove(GameWebSocket webSocket) {
@@ -72,5 +74,19 @@ public class ViewersTeam extends Team {
     protected void onChatTyping(GameWebSocket webSocket) {
         LOGGER.error("Viewer can't type chat messages.");
         webSocket.closeSession();
+    }
+
+    @Override
+    protected void onConnected(GameWebSocket webSocket) {
+        super.onConnected(webSocket);
+        Map<Object, Object> data = new HashMap<>();
+        data.put("players", this.players == null ? null : this.players.getRoundHydrated(null));
+        data.put("viewers", this.getViewersHydrated());
+        Event viewerEvent = new Event(webSocket, "viewer_status", data);
+        webSocket.onEvent(viewerEvent);
+    }
+
+    protected void onPlayersFlush(PlayersTeam players) {
+        this.players = players;
     }
 }
