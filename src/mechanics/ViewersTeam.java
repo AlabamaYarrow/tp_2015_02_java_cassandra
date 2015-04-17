@@ -55,29 +55,14 @@ public class ViewersTeam extends Team {
         this.users.remove(viewer);
     }
 
-    protected void onChatMessage(GameWebSocket webSocket, String data) {
-        LOGGER.error("Viewer can't send chat messages.");
-        webSocket.closeSession();
-    }
-
-    protected void onChatStoppedTyping(GameWebSocket webSocket) {
-        LOGGER.error("Viewer can't type chat messages.");
-        webSocket.closeSession();
-    }
-
-    protected void onChatTyping(GameWebSocket webSocket) {
-        LOGGER.error("Viewer can't type chat messages.");
-        webSocket.closeSession();
-    }
-
     @Override
-    protected void onConnected(GameWebSocket webSocket) {
-        super.onConnected(webSocket);
+    protected void onConnected(Event event) {
+        super.onConnected(event);
         Map<Object, Object> data = new HashMap<>();
         data.put("players", this.players == null ? null : this.players.getRoundHydrated(null));
         data.put("viewers", this.getViewersHydrated());
-        Event viewerEvent = new Event(webSocket, "viewer_status", data);
-        webSocket.onEvent(viewerEvent);
+        Event viewerEvent = new Event(event.getTarget(), "viewer_status", data);
+        ((GameWebSocket) event.getTarget()).onEvent(viewerEvent);
     }
 
     protected void onPlayersFlush(PlayersTeam players) {

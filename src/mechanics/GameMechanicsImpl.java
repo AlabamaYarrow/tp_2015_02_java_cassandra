@@ -3,19 +3,23 @@ package mechanics;
 import base.GameMechanics;
 import base.Listenable;
 import base.Team;
+import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import frontend.GameWebSocket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resources.GameResource;
 
 import java.util.*;
 
 public class GameMechanicsImpl implements GameMechanics {
+    private static final Logger LOGGER = LogManager.getLogger(GameMechanicsImpl.class);
     Map<GameWebSocket, Team> webSocketsToTeams = new HashMap<>();
     Deque<PlayersTeam> teams = new LinkedList<>();
     ViewersTeam viewersTeam;
     GameResource resource;
 
-    public GameMechanicsImpl(GameResource resource) {
+    public GameMechanicsImpl(@NotNull GameResource resource) {
         this.resource = resource;
         this.viewersTeam = new ViewersTeam();
     }

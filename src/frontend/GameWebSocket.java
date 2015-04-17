@@ -55,40 +55,40 @@ public class GameWebSocket implements Listenable, Listener {
         }
     }
 
-    protected void notifyClientChatMessage(UserProfile author, String text) {
+    protected void onChatMessage(Event event) {
         Map<Object, Object> body = new HashMap<>();
-        body.put("id", author.getID());
-        body.put("text", text);
+        body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
+        body.put("text", event.getData().get("text"));
+        this.notifyClient("chat_message", body);
+    }
+
+    protected void onChatStoppedTyping(Event event) {
+        Map<Object, Object> body = new HashMap<>();
+        body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
         this.notifyClient("chat_stopped_typing", body);
     }
 
-    protected void notifyClientChatStoppedTyping(UserProfile userProfile) {
+    protected void onChatTyping(Event event) {
         Map<Object, Object> body = new HashMap<>();
-        body.put("id", userProfile.getID());
-        this.notifyClient("chat_stopped_typing", body);
-    }
-
-    protected void notifyClientChatTyping(UserProfile userProfile) {
-        Map<Object, Object> body = new HashMap<>();
-        body.put("id", userProfile.getID());
+        body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
         this.notifyClient("chat_typing", body);
     }
 
-    protected void notifyClientPlayerStatus(PlayersTeam team) {
+    protected void onPlayerStatus(PlayersTeam team) {
         this.notifyClient("player_status", team.getRoundHydrated(this));
     }
 
-    protected void notifyClientUserCome(UserProfile userProfile) {
+    protected void onConnected(UserProfile userProfile) {
         this.notifyClient("user_come", userProfile.getHydrated());
     }
 
-    protected void notifyClientUserGone(UserProfile userProfile) {
+    protected void onClosed(UserProfile userProfile) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", userProfile.getID());
         this.notifyClient("user_gone", body);
     }
 
-    protected void notifyClientViewerStatus(Map<Object, Object> players, List<Object> viewers) {
+    protected void onViewerStatus(Map<Object, Object> players, List<Object> viewers) {
         Map<Object, Object> body = new HashMap<>();
         body.put("round", players);
         body.put("viewers", viewers);
@@ -96,18 +96,18 @@ public class GameWebSocket implements Listenable, Listener {
     }
 
     @OnWebSocketConnect
-    public void onConnect(Session session) {
+    public void onWebSocketConnect(Session session) {
         this.session = session;
         this.notifyListeners("connected", null);
     }
 
     @OnWebSocketClose
-    public void onClose(int statusCode, String reason) {
+    public void onWebSocketClose(int statusCode, String reason) {
         this.notifyListeners("closed", null);
     }
 
     @OnWebSocketMessage
-    public void onMessage(String text) {
+    public void onWebSocketMessage(String text) {
         JSONObject json, body;
         String type;
         try {
@@ -131,13 +131,12 @@ public class GameWebSocket implements Listenable, Listener {
                 LOGGER.error("Chat message text should be of string type.", e);
                 this.closeSession();
                 return;
-            }
-            if (messageText == null) {
+            } catch (NullPointerException e) {
                 LOGGER.error("Chat message can't be null.");
                 this.closeSession();
                 return;
             }
-            this.notifyListeners("chat_message", null);
+            this.notifyListeners("chat_message", body);
         } else {
             LOGGER.error("Unknown WebSocket message type.");
             this.closeSession();
@@ -166,19 +165,19 @@ public class GameWebSocket implements Listenable, Listener {
         String type = event.getType();
         Map<Object, Object> data = event.getData();
         if ("connected".equals(type)) {
-            this.notifyClientUserCome(((GameWebSocket) event.getTarget()).getUserProfile());
+            this.onConnected(((GameWebSocket) event.getTarget()).getUserProfile());
         } else if ("closed".equals(type)) {
-            this.notifyClientUserGone(((GameWebSocket) event.getTarget()).getUserProfile());
+            this.onClosed(((GameWebSocket) event.getTarget()).getUserProfile());
         } else if ("player_status".equals(type)) {
-            this.notifyClientPlayerStatus((PlayersTeam) event.getTarget());
+            this.onPlayerStatus((PlayersTeam) event.getTarget());
         } else if ("viewer_status".equals(type)) {
-            this.notifyClientViewerStatus((Map<Object, Object>) data.get("players"), (List<Object>) data.get("viewers"));
+            this.onViewerStatus((Map<Object, Object>) data.get("players"), (List<Object>) data.get("viewers"));
         } else if ("chat_message".equals(type)) {
-            this.notifyClientChatMessage(((GameWebSocket) data.get("user")).getUserProfile(), (String) data.get("text"));
+            this.onChatMessage(event);
         } else if ("chat_typing".equals(type)) {
-            this.notifyClientChatTyping(((GameWebSocket) data.get("user")).getUserProfile());
+            this.onChatTyping(event);
         } else if ("chat_stopped_typing".equals(type)) {
-            this.notifyClientChatStoppedTyping(((GameWebSocket) data.get("user")).getUserProfile());
+            this.onChatStoppedTyping(event);
         } else {
             LOGGER.debug("Unknown event: {} {}", type, data);
         }

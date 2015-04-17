@@ -3,7 +3,6 @@ package mechanics;
 import base.Listenable;
 import base.Listener;
 import base.Team;
-import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import frontend.GameWebSocket;
 
@@ -54,25 +53,6 @@ public class PlayersTeam extends Team implements Listenable {
 
     public void notifyPlayerStatus() {
         this.notifyListeners("player_status", null);
-    }
-
-    protected void onChatTyping(GameWebSocket player) {
-        Map<Object, Object> data = new HashMap<>();
-        data.put("player", player);
-        this.notifyListeners("chat_typing", data);
-    }
-
-    protected void onChatStoppedTyping(GameWebSocket player) {
-        Map<Object, Object> data = new HashMap<>();
-        data.put("player", player);
-        this.notifyListeners("chat_stopped_typing", data);
-    }
-
-    protected void onChatMessage(@NotNull GameWebSocket player, @NotNull String text) {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("player", player);
-        map.put("text", text);
-        this.notifyListeners("chat_message", map);
     }
 
     @Override

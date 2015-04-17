@@ -34,17 +34,16 @@ public abstract class Team implements Listener {
         String type = event.getType();
         Listenable target = event.getTarget();
         if (target instanceof GameWebSocket) {
-            GameWebSocket webSocket = (GameWebSocket) target;
             if ("connected".equals(type)) {
-                this.onConnected(webSocket);
+                this.onConnected(event);
             } else if ("closed".equals(type)) {
                 this.onClosed(event);
             } else if ("chat_typing".equals(type)) {
-                this.onChatTyping(webSocket);
+                this.onChatTyping(event);
             } else if ("chat_stopped_typing".equals(type)) {
-                this.onChatStoppedTyping(webSocket);
+                this.onChatStoppedTyping(event);
             } else if ("chat_message".equals(type)) {
-                this.onChatMessage(webSocket, (String) event.getData().get("text"));
+                this.onChatMessage(event);
             }
         } else {
             LOGGER.error("Unknown event: {} {}", type, event.getData());
@@ -55,17 +54,22 @@ public abstract class Team implements Listener {
         this.notifyListeners(event);
     }
 
-    protected abstract void onChatTyping(GameWebSocket webSocket);
+    protected void onChatTyping(Event event) {
+        this.notifyListeners(event);
+    }
 
-    protected abstract void onChatStoppedTyping(GameWebSocket webSocket);
+    protected void onChatStoppedTyping(Event event) {
+        this.notifyListeners(event);
+    }
 
-    protected abstract void onChatMessage(GameWebSocket webSocket, String text);
+    protected void onChatMessage(Event event) {
+        this.notifyListeners(event);
+    }
 
-    protected void onConnected(GameWebSocket webSocket) {
-        Event connectedEvent = new Event(webSocket, "connected", null);
+    protected void onConnected(Event event) {
         this.users.stream()
-                .filter(player -> player != webSocket)
-                .forEach(player -> player.onEvent(connectedEvent))
+                .filter(player -> player != event.getTarget())
+                .forEach(player -> player.onEvent(event))
         ;
     }
 
@@ -75,8 +79,9 @@ public abstract class Team implements Listener {
     }
 
     protected void notifyListeners(Event event) {
-        for (GameWebSocket user : this.users) {
-            user.onEvent(event);
-        }
+        this.users.stream()
+                .filter(user -> user != event.getTarget())
+                .forEach(user -> user.onEvent(event))
+        ;
     }
 }
