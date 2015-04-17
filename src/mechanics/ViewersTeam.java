@@ -25,12 +25,12 @@ public class ViewersTeam extends Team {
 
     @Override
     public void onEvent(Event event) {
-            String type = event.getType();
-            if ("player_status".equals(type)) {
-                this.onPlayerStatus(event);
-            } else if ("flush".equals(type)) {
-                this.onFlush(event);
-            } else {
+        String type = event.getType();
+        if ("player_status".equals(type)) {
+            this.onPlayerStatus(event);
+        } else if ("flush".equals(type)) {
+            this.onFlush(event);
+        } else {
             super.onEvent(event);
         }
     }

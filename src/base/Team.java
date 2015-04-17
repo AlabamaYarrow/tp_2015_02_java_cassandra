@@ -32,17 +32,17 @@ public abstract class Team implements Listener {
 
     public void onEvent(Event event) {
         String type = event.getType();
-            if ("connected".equals(type)) {
-                this.onConnected(event);
-            } else if ("closed".equals(type)) {
-                this.onClosed(event);
-            } else if ("chat_typing".equals(type)) {
-                this.onChatTyping(event);
-            } else if ("chat_stopped_typing".equals(type)) {
-                this.onChatStoppedTyping(event);
-            } else if ("chat_message".equals(type)) {
-                this.onChatMessage(event);
-            } else {
+        if ("connected".equals(type)) {
+            this.onConnected(event);
+        } else if ("closed".equals(type)) {
+            this.onClosed(event);
+        } else if ("chat_typing".equals(type)) {
+            this.onChatTyping(event);
+        } else if ("chat_stopped_typing".equals(type)) {
+            this.onChatStoppedTyping(event);
+        } else if ("chat_message".equals(type)) {
+            this.onChatMessage(event);
+        } else {
             LOGGER.error("Unknown event: {} {}", type, event.getData());
         }
     }

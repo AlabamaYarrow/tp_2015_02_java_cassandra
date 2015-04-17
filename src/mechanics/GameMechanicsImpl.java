@@ -26,11 +26,11 @@ public class GameMechanicsImpl implements GameMechanics {
     @Override
     public void onEvent(Event event) {
         String type = event.getType();
-            if ("connected".equals(type)) {
-                this.onConnected(event);
-            } else if ("closed".equals(type)) {
-                this.onClosed(event);
-            }
+        if ("connected".equals(type)) {
+            this.onConnected(event);
+        } else if ("closed".equals(type)) {
+            this.onClosed(event);
+        }
     }
 
     protected void onClosed(Event event) {
