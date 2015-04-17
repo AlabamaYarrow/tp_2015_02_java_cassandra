@@ -7,7 +7,6 @@ import com.sun.istack.internal.Nullable;
 import main.UserProfile;
 import mechanics.Event;
 import mechanics.PlayersTeam;
-import mechanics.UnknownEventError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
@@ -181,7 +180,7 @@ public class GameWebSocket implements Listenable, Listener {
         } else if ("chat_stopped_typing".equals(type)) {
             this.notifyClientChatStoppedTyping(((GameWebSocket) data.get("user")).getUserProfile());
         } else {
-            throw new UnknownEventError();
+            LOGGER.debug("Unknown event: {} {}", type, data);
         }
     }
 }

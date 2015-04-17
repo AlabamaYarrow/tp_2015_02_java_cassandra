@@ -43,12 +43,6 @@ public class ViewersTeam extends Team {
         }
     }
 
-    @Override
-    protected void notifyListeners(String type, Map<Object, Object> map) {
-        Event event = new Event(null, type, map);
-        this.users.stream().forEach(webSocket -> webSocket.onEvent(event));
-    }
-
     public void add(GameWebSocket viewer) {
         this.users.add(viewer);
         viewer.addListener(this);
@@ -56,9 +50,9 @@ public class ViewersTeam extends Team {
         this.onEvent(event);
     }
 
-    public void remove(GameWebSocket webSocket) {
-        webSocket.removeListener(this);
-        this.users.remove(webSocket);
+    public void remove(GameWebSocket viewer) {
+        viewer.removeListener(this);
+        this.users.remove(viewer);
     }
 
     protected void onChatMessage(GameWebSocket webSocket, String data) {

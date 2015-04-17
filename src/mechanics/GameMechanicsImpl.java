@@ -35,24 +35,30 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     protected void onWebSocketClosed(GameWebSocket webSocket) {
-        Team team = webSocketsToTeams.get(webSocket);
+        Team team = this.webSocketsToTeams.get(webSocket);
         if (team instanceof ViewersTeam) {
             ((ViewersTeam) team).remove(webSocket);
+            this.webSocketsToTeams.remove(webSocket);
         } else { // if team is PlayersTeam
             PlayersTeam incompleteTeam = (PlayersTeam) team;
             this.teams.remove(incompleteTeam);
             List<GameWebSocket> users = incompleteTeam.getUsers();
             users.remove(webSocket);
+            this.webSocketsToTeams.remove(webSocket);
             incompleteTeam.flush(this.getTeamToViewAt());
             List<GameWebSocket> viewers = this.viewersTeam.getUsers();
             if (viewers.size() == 0) {
-                users.forEach(this.viewersTeam::add);
+                users.forEach((viewer) -> {
+                    this.viewersTeam.add(viewer);
+                    this.webSocketsToTeams.put(viewer, this.viewersTeam);
+                });
             } else {
                 GameWebSocket player = viewers.get(0);
                 this.viewersTeam.remove(player);
                 users.add(player);
                 PlayersTeam playersTeam = new PlayersTeam(users);
                 this.teams.add(playersTeam);
+                users.forEach((p) -> this.webSocketsToTeams.put(p, playersTeam));
             }
         }
     }
@@ -63,9 +69,13 @@ public class GameMechanicsImpl implements GameMechanics {
             this.viewersTeam.flush(this.getTeamToViewAt());
             users.add(webSocket);
             PlayersTeam team = new PlayersTeam(users);
+            for (GameWebSocket player : users) {
+                this.webSocketsToTeams.put(player, team);
+            }
             this.teams.add(team);
         } else {
             this.viewersTeam.add(webSocket);
+            this.webSocketsToTeams.put(webSocket, this.viewersTeam);
         }
     }
 

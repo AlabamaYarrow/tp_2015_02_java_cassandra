@@ -68,6 +68,12 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose" />
+      <item index="1" class="java.lang.String" itemvalue="org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect" />
+      <item index="2" class="java.lang.String" itemvalue="org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect" />
+      <item index="3" class="java.lang.String" itemvalue="org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage" />
+    </list>
   </component>
   <component name="IdProvider" IDEtalkID="4D34FE6FADF40F0C0208685DE0BE9C31" />
   <component name="MavenProjectsManager">

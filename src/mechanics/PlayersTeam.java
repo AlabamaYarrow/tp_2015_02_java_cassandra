@@ -8,13 +8,14 @@ import com.sun.istack.internal.Nullable;
 import frontend.GameWebSocket;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayersTeam extends Team implements Listenable {
     protected GameWebSocket artist;
     protected GameWebSocket cassandra;
     protected List<GameWebSocket> judges;
     protected String secret;
-    protected List<Listener> listeners;
+    protected List<Listener> listeners = new CopyOnWriteArrayList<>();
 
     public PlayersTeam(List<GameWebSocket> users) {
         this.users = users;
@@ -76,10 +77,8 @@ public class PlayersTeam extends Team implements Listenable {
 
     @Override
     protected void notifyListeners(String type, Map<Object, Object> data) {
+        super.notifyListeners(type, data);
         Event event = new Event(this, type, data);
-        for (GameWebSocket user : this.users) {
-            user.onEvent(event);
-        }
         for (Listener listener : this.listeners) {
             listener.onEvent(event);
         }
