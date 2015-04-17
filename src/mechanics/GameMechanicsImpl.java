@@ -1,7 +1,6 @@
 package mechanics;
 
 import base.GameMechanics;
-import base.Listenable;
 import base.Team;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
@@ -26,19 +25,16 @@ public class GameMechanicsImpl implements GameMechanics {
 
     @Override
     public void onEvent(Event event) {
-        Listenable target = event.getTarget();
         String type = event.getType();
-        if (target instanceof GameWebSocket) {
-            GameWebSocket webSocket = (GameWebSocket) target;
             if ("connected".equals(type)) {
-                this.onWebSocketConnected(webSocket);
+                this.onConnected(event);
             } else if ("closed".equals(type)) {
-                this.onWebSocketClosed(webSocket);
+                this.onClosed(event);
             }
-        }
     }
 
-    protected void onWebSocketClosed(GameWebSocket webSocket) {
+    protected void onClosed(Event event) {
+        GameWebSocket webSocket = (GameWebSocket) event.getTarget();
         Team team = this.webSocketsToTeams.get(webSocket);
         if (team instanceof ViewersTeam) {
             ((ViewersTeam) team).remove(webSocket);
@@ -67,7 +63,8 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
-    protected void onWebSocketConnected(GameWebSocket webSocket) {
+    protected void onConnected(Event event) {
+        GameWebSocket webSocket = (GameWebSocket) event.getTarget();
         List<GameWebSocket> users = this.viewersTeam.getUsers();
         if (users.size() + 1 >= this.resource.judgesCount + 2) {
             this.viewersTeam.flush(this.getTeamToViewAt());

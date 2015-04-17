@@ -8,6 +8,7 @@ import frontend.GameWebSocket;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class PlayersTeam extends Team implements Listenable {
     protected GameWebSocket artist;
@@ -43,11 +44,11 @@ public class PlayersTeam extends Team implements Listenable {
         }
         List<Object> judges = new Vector<>();
         round.put("judges", judges);
-        for (GameWebSocket judgeWebSocket : this.judges) {
-            if (recipient != judgeWebSocket) {
-                judges.add(judgeWebSocket.getUserProfile().getHydrated());
-            }
-        }
+        judges.addAll(this.judges.stream()
+                        .filter(judgeWebSocket -> recipient != judgeWebSocket)
+                        .map(judgeWebSocket -> judgeWebSocket.getUserProfile().getHydrated())
+                        .collect(Collectors.toList())
+        );
         return round;
     }
 

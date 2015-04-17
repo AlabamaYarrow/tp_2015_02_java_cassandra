@@ -32,8 +32,6 @@ public abstract class Team implements Listener {
 
     public void onEvent(Event event) {
         String type = event.getType();
-        Listenable target = event.getTarget();
-        if (target instanceof GameWebSocket) {
             if ("connected".equals(type)) {
                 this.onConnected(event);
             } else if ("closed".equals(type)) {
@@ -44,8 +42,7 @@ public abstract class Team implements Listener {
                 this.onChatStoppedTyping(event);
             } else if ("chat_message".equals(type)) {
                 this.onChatMessage(event);
-            }
-        } else {
+            } else {
             LOGGER.error("Unknown event: {} {}", type, event.getData());
         }
     }

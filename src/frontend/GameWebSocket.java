@@ -74,25 +74,22 @@ public class GameWebSocket implements Listenable, Listener {
         this.notifyClient("chat_typing", body);
     }
 
-    protected void onPlayerStatus(PlayersTeam team) {
-        this.notifyClient("player_status", team.getRoundHydrated(this));
+    protected void onPlayerStatus(Event event) {
+        this.notifyClient(event.getType(), ((PlayersTeam) event.getTarget()).getRoundHydrated(this));
     }
 
-    protected void onConnected(UserProfile userProfile) {
-        this.notifyClient("user_come", userProfile.getHydrated());
+    protected void onConnected(Event event) {
+        this.notifyClient("user_come", ((GameWebSocket) event.getTarget()).getUserProfile().getHydrated());
     }
 
-    protected void onClosed(UserProfile userProfile) {
+    protected void onClosed(Event event) {
         Map<Object, Object> body = new HashMap<>();
-        body.put("id", userProfile.getID());
+        body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
         this.notifyClient("user_gone", body);
     }
 
-    protected void onViewerStatus(Map<Object, Object> players, List<Object> viewers) {
-        Map<Object, Object> body = new HashMap<>();
-        body.put("round", players);
-        body.put("viewers", viewers);
-        this.notifyClient("viewer_status", body);
+    protected void onViewerStatus(Event event) {
+        this.notifyClient(event.getType(), event.getData());
     }
 
     @OnWebSocketConnect
@@ -163,15 +160,14 @@ public class GameWebSocket implements Listenable, Listener {
     @Override
     public void onEvent(Event event) {
         String type = event.getType();
-        Map<Object, Object> data = event.getData();
         if ("connected".equals(type)) {
-            this.onConnected(((GameWebSocket) event.getTarget()).getUserProfile());
+            this.onConnected(event);
         } else if ("closed".equals(type)) {
-            this.onClosed(((GameWebSocket) event.getTarget()).getUserProfile());
+            this.onClosed(event);
         } else if ("player_status".equals(type)) {
-            this.onPlayerStatus((PlayersTeam) event.getTarget());
+            this.onPlayerStatus(event);
         } else if ("viewer_status".equals(type)) {
-            this.onViewerStatus((Map<Object, Object>) data.get("players"), (List<Object>) data.get("viewers"));
+            this.onViewerStatus(event);
         } else if ("chat_message".equals(type)) {
             this.onChatMessage(event);
         } else if ("chat_typing".equals(type)) {
@@ -179,7 +175,7 @@ public class GameWebSocket implements Listenable, Listener {
         } else if ("chat_stopped_typing".equals(type)) {
             this.onChatStoppedTyping(event);
         } else {
-            LOGGER.debug("Unknown event: {} {}", type, data);
+            LOGGER.debug("Unknown event: {} {}", type, event.getData());
         }
     }
 }

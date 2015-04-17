@@ -1,6 +1,5 @@
 package mechanics;
 
-import base.Listenable;
 import base.Team;
 import frontend.GameWebSocket;
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +16,7 @@ public class ViewersTeam extends Team {
     protected static final Logger LOGGER = LogManager.getLogger(ViewersTeam.class);
     protected PlayersTeam players;
 
-    public List<Object> getViewersHydrated() {
+    protected List<Object> getViewersHydrated() {
         return this.users.stream()
                 .map(user -> user.getUserProfile().getHydrated())
                 .collect(Collectors.toCollection(Vector::new))
@@ -26,21 +25,21 @@ public class ViewersTeam extends Team {
 
     @Override
     public void onEvent(Event event) {
-        Listenable target = event.getTarget();
-        if (target instanceof PlayersTeam) {
             String type = event.getType();
-            Map<Object, Object> map = new HashMap<>();
             if ("player_status".equals(type)) {
-                type = "viewer_status";
-                map.put("players", ((PlayersTeam) target).getRoundHydrated(null));
-                map.put("viewers", this);
-                this.notifyListeners(type, map);
+                this.onPlayerStatus(event);
             } else if ("flush".equals(type)) {
-                this.onPlayersFlush((PlayersTeam) event.getData());
-            }
-        } else {
+                this.onFlush(event);
+            } else {
             super.onEvent(event);
         }
+    }
+
+    private void onPlayerStatus(Event event) {
+        Map<Object, Object> data = new HashMap<>();
+        data.put("round", ((PlayersTeam) event.getTarget()).getRoundHydrated(null));
+        data.put("viewers", this.getViewersHydrated());
+        this.notifyListeners("viewer_status", data);
     }
 
     public void add(GameWebSocket viewer) {
@@ -59,13 +58,13 @@ public class ViewersTeam extends Team {
     protected void onConnected(Event event) {
         super.onConnected(event);
         Map<Object, Object> data = new HashMap<>();
-        data.put("players", this.players == null ? null : this.players.getRoundHydrated(null));
+        data.put("round", this.players == null ? null : this.players.getRoundHydrated(null));
         data.put("viewers", this.getViewersHydrated());
         Event viewerEvent = new Event(event.getTarget(), "viewer_status", data);
         ((GameWebSocket) event.getTarget()).onEvent(viewerEvent);
     }
 
-    protected void onPlayersFlush(PlayersTeam players) {
-        this.players = players;
+    protected void onFlush(Event event) {
+        this.players = (PlayersTeam) event.getData().get("players");
     }
 }
