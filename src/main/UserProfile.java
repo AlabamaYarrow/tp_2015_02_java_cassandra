@@ -9,14 +9,14 @@ public class UserProfile {
     protected String email;
     protected String name;
     protected String password;
-    protected int score;
+    protected int scoreTotal;
 
     public UserProfile(String email, String name, String password) {
         this.id = UserProfile.getUniqueId();
         this.email = email;
         this.name = name;
         this.password = password;
-        this.score = 0;
+        this.scoreTotal = 0;
     }
 
     protected static int getUniqueId() {
@@ -39,8 +39,8 @@ public class UserProfile {
         return this.name;
     }
 
-    public int getScore() {
-        return this.score;
+    public int getScoreTotal() {
+        return this.scoreTotal;
     }
 
     public Map<Object, Object> getHydrated() {
@@ -53,6 +53,6 @@ public class UserProfile {
         map.put("id", this.id);
         map.put("email", this.email);
         map.put("name", this.name);
-        map.put("score", this.score);
+        map.put("scoreTotal", this.scoreTotal);
     }
 }

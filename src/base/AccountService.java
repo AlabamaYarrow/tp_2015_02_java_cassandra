@@ -25,4 +25,6 @@ public interface AccountService {
 
     @NotNull
     UserProfile getUserByName(String name) throws NoUserException;
+
+    UserProfile getUserById(int userId) throws NoUserException;
 }

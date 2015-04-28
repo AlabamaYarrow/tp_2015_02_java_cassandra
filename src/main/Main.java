@@ -1,6 +1,7 @@
 package main;
 
 import base.AccountService;
+import base.ScoreService;
 import freemarker.template.Configuration;
 import frontend.*;
 import mechanics.GameMechanicsImpl;
@@ -32,12 +33,15 @@ public class Main {
         LOGGER.info("Starting at port: {}", port);
 
         AccountService accountService = new AccountServiceImpl();
+        ScoreService scoreService = new ScoreServiceImpl();
 
         ResourceSystem resourceSystem = ResourceSystem.getInstance();
 
         Servlet admin = new AdminServlet(accountService, new PageGenerator("templates", new Configuration()), new Timer());
         Servlet authCheck = new AuthCheckServlet(accountService);
         Servlet game = new WebSocketGameServlet(accountService, new GameMechanicsImpl((GameResource) resourceSystem.getResource("resources.GameResource")));
+        Servlet score = new ScoreDetailServlet(scoreService);
+        Servlet scores = new ScoreListServlet(scoreService, accountService);
         Servlet signIn = new SignInServlet(accountService);
         Servlet signOut = new SignOutServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
@@ -46,9 +50,12 @@ public class Main {
         context.addServlet(new ServletHolder(admin), "/admin/");
         context.addServlet(new ServletHolder(authCheck), "/api/v1/auth/check/");
         context.addServlet(new ServletHolder(game), "/api/v1/game/");
+        context.addServlet(new ServletHolder(scores), "/api/v1/scores/");
+        context.addServlet(new ServletHolder(score), "/api/v1/scores/*");
         context.addServlet(new ServletHolder(signIn), "/api/v1/auth/signin/");
         context.addServlet(new ServletHolder(signOut), "/api/v1/auth/signout/");
         context.addServlet(new ServletHolder(signUp), "/api/v1/auth/signup/");
+
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);

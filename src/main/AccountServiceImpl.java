@@ -7,16 +7,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AccountServiceImpl implements AccountService {
-    protected Map<String, UserProfile> users = new HashMap<>();
-    protected Map<String, UserProfile> sessions = new HashMap<>();
+    private Map<Integer, UserProfile> usersById = new HashMap<>();
+    private Map<String, UserProfile> usersByName = new HashMap<>();
+    private Map<String, UserProfile> sessions = new HashMap<>();
 
     @Override
     public void addUser(UserProfile userProfile) throws AuthException {
         String userName = userProfile.getName();
-        if (users.containsKey(userName)) {
+        if (this.usersByName.containsKey(userName)) {
             throw new AuthException();
         }
-        users.put(userName, userProfile);
+        this.usersByName.put(userName, userProfile);
+        this.usersById.put(userProfile.getID(), userProfile);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public UserProfile getUserByName(String name) throws NoUserException {
-        UserProfile user = this.users.get(name);
+        UserProfile user = this.usersByName.get(name);
         if (null == user) {
             throw new NoUserException();
         }
@@ -57,12 +59,22 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public long getUsersCount() {
-        return this.users.size();
+        return this.usersByName.size();
     }
 
     @Override
     public long getOnlineCount() {
         return this.sessions.size();
+    }
+
+    @Override
+    @NotNull
+    public UserProfile getUserById(int userId) throws NoUserException {
+        UserProfile user = this.usersById.get(userId);
+        if (user == null) {
+            throw new NoUserException();
+        }
+        return user;
     }
 
     @Override

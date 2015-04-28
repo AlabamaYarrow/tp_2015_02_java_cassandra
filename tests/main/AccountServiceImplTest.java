@@ -32,7 +32,7 @@ public class AccountServiceImplTest extends TestCase {
         when(user.getEmail()).thenReturn("tom@mail.com");
         when(user.getID()).thenReturn(31416);
         when(user.getName()).thenReturn("Thomas");
-        when(user.getScore()).thenReturn(314159);
+        when(user.getScoreTotal()).thenReturn(314159);
     }
 
     @Test(expected = NoUserException.class)
