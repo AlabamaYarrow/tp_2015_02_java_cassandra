@@ -42,6 +42,7 @@ public class Score implements Comparable {
 
     public void hydrate(Map<Object, Object> map) {
         map.put("id", this.id);
+        map.put("score", this.score);
         map.put("user", this.user.getHydrated());
     }
 }

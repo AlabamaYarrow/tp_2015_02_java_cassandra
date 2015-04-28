@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class ScoreListServlet extends ValidatedServlet {
 
-    private static final String[] REQUIRED_FIELDS = {"score", "user_id"};
+    private static final String[] REQUIRED_FIELDS = {"int score", "int user_id"};
     private final AccountService accountService;
     private final ScoreService scoreService;
 
@@ -67,23 +67,20 @@ public class ScoreListServlet extends ValidatedServlet {
 
         int status = HttpServletResponse.SC_OK;
 
-        String[] pathParts = request.getPathInfo().split("/");
         Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
-        if (pathParts.length != 1) {
-            status = HttpServletResponse.SC_NOT_FOUND;
-        } else if (!this.areRequiredFieldsValid(requestJson, jsonBody)) {
-            status = HttpServletResponse.SC_BAD_REQUEST;
-        } else {
+        if (this.areRequiredFieldsValid(requestJson, jsonBody)) {
             try {
-                int id = Integer.decode(pathParts[0]);
-                UserProfile user = this.accountService.getUserById((int) requestJson.get("user_id"));
-                Score score = new Score(user, (int) requestJson.get("score"));
+                long userId = (Long) requestJson.get("user_id");
+                UserProfile user = this.accountService.getUserById((int) userId);
+                long scoreValue = (Long) requestJson.get("score");
+                Score score = new Score(user, (int) scoreValue);
                 this.scoreService.addScore(score);
-            } catch (NumberFormatException | NoUserException e) {
+                score.hydrate(jsonBody);
+            } catch (NoUserException e) {
                 status = HttpServletResponse.SC_NOT_FOUND;
-            } catch (ClassCastException e) {
-                status = HttpServletResponse.SC_BAD_REQUEST;
             }
+        } else {
+            status = HttpServletResponse.SC_BAD_REQUEST;
         }
         json.put("status", status);
         response.setStatus(status);

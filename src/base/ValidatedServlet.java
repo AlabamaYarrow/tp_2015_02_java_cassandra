@@ -18,10 +18,17 @@ public class ValidatedServlet extends HttpServlet {
     protected boolean areRequiredFieldsValid(Map<Object, Object> request, Map<Object, Object> jsonBody) {
         boolean isValid = true;
         for (String name : this.REQUIRED_FIELDS) {
+            boolean integerType = name.startsWith("int ");
+            if (integerType) {
+                name = name.substring(4, name.length());
+            }
             Object valueObj = request.get(name);
-            String value;
             try {
-                value = (String) valueObj;
+                if (integerType) {
+                    long value = (Long) valueObj;
+                } else {
+                    String value = (String) valueObj;
+                }
             } catch (ClassCastException e) {
                 isValid = false;
                 Map<Object, Object> error = new HashMap<>();
@@ -32,13 +39,13 @@ public class ValidatedServlet extends HttpServlet {
                 }
                 continue;
             }
-            if (null == value || value.isEmpty()) {
+            if (valueObj == null || (!integerType && ((String) valueObj).isEmpty())) {
                 isValid = false;
                 Map<Object, Object> error = new HashMap<>();
                 jsonBody.put(name, error);
                 error.put("error", "required");
                 if (!"password".equals(name)) {
-                    error.put("value", value);
+                    error.put("value", valueObj);
                 }
             }
         }
