@@ -3,8 +3,8 @@ package frontend;
 import base.GameMechanics;
 import base.Listenable;
 import base.Listener;
+import base.dataSets.UserDataSet;
 import com.sun.istack.internal.Nullable;
-import main.UserProfile;
 import mechanics.Event;
 import mechanics.PlayersTeam;
 import org.apache.logging.log4j.LogManager;
@@ -26,17 +26,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @WebSocket
 public class GameWebSocket implements Listenable, Listener {
     private static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
-    private UserProfile userProfile;
+    private UserDataSet userProfile;
     private Session session;
     private GameMechanics gameMechanics;
     private List<Listener> listeners = new CopyOnWriteArrayList<>();
 
-    public GameWebSocket(UserProfile userProfile, GameMechanics gameMechanics) {
+    public GameWebSocket(UserDataSet userProfile, GameMechanics gameMechanics) {
         this.userProfile = userProfile;
         this.gameMechanics = gameMechanics;
     }
 
-    public UserProfile getUserProfile() {
+    public UserDataSet getUserProfile() {
         return userProfile;
     }
 

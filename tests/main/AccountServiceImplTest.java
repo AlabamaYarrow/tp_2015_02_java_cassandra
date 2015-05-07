@@ -1,6 +1,7 @@
 package main;
 
 import base.AccountService;
+import base.dataSets.UserDataSet;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class AccountServiceImplTest extends TestCase {
     private static final String SID = "foobar";
 
     @Mock
-    private UserProfile user;
+    private UserDataSet user;
 
     public void testIsAuthorized() throws Exception {
         AccountService accountService = new AccountServiceImpl();
@@ -30,7 +31,7 @@ public class AccountServiceImplTest extends TestCase {
     public void setUp() {
         when(user.checkPassword("topsecret")).thenReturn(true);
         when(user.getEmail()).thenReturn("tom@mail.com");
-        when(user.getID()).thenReturn(31416);
+        when(user.getID()).thenReturn(31416L);
         when(user.getName()).thenReturn("Thomas");
         when(user.getScoreTotal()).thenReturn(314159);
     }

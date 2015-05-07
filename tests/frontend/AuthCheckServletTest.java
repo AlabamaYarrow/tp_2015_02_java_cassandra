@@ -1,7 +1,7 @@
 package frontend;
 
 import base.UserProfileTest;
-import main.UserProfile;
+import base.dataSets.UserDataSet;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.junit.Test;
@@ -16,7 +16,7 @@ public class AuthCheckServletTest extends UserProfileTest {
         AuthCheckServlet authCheck = new AuthCheckServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = this.createUserProfile();
+        UserDataSet user = this.createUserProfile();
         HttpServletRequest request = this.getSignedInRequest(user, "");
 
         authCheck.doGet(request, response);

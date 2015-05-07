@@ -1,7 +1,7 @@
 package frontend;
 
 import base.UserProfileTest;
-import main.UserProfile;
+import base.dataSets.UserDataSet;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.junit.Test;
@@ -86,7 +86,7 @@ public class SignInServletTest extends UserProfileTest {
         SignInServlet signIn = new SignInServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = this.createUserProfile();
+        UserDataSet user = this.createUserProfile();
         HttpServletRequest request = this.getSignedInRequest(user, "");
 
         signIn.doPost(request, response);
@@ -102,7 +102,7 @@ public class SignInServletTest extends UserProfileTest {
         SignInServlet signIn = new SignInServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = this.createUserProfile();
+        UserDataSet user = this.createUserProfile();
         String requestJson = String.format("{ \"name\": \"%s\", \"password\": \"topsecret\" }", user.getName());
         HttpServletRequest request = this.getMockedRequest(requestJson);
 
@@ -119,7 +119,7 @@ public class SignInServletTest extends UserProfileTest {
         SignInServlet signIn = new SignInServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = this.createUserProfile();
+        UserDataSet user = this.createUserProfile();
         String requestJson = String.format("{ \"name\": \"%s\", \"password\": \"not_a_secret\" }", user.getName());
         HttpServletRequest request = this.getMockedRequest(requestJson);
 

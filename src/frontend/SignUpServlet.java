@@ -2,8 +2,8 @@ package frontend;
 
 import base.AccountService;
 import base.ValidatedServlet;
+import base.dataSets.UserDataSet;
 import main.AuthException;
-import main.UserProfile;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -39,7 +39,7 @@ public class SignUpServlet extends ValidatedServlet {
             Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
             if (requestJson != null && this.areRequiredFieldsValid(requestJson, jsonBody)) {
                 String name = (String) requestJson.get("name");
-                UserProfile user = new UserProfile((String) requestJson.get("email"), name, (String) requestJson.get("password"));
+                UserDataSet user = new UserDataSet((String) requestJson.get("email"), name, (String) requestJson.get("password"));
                 try {
                     accountService.addUser(user);
                     user.hydrate(jsonBody);

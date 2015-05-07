@@ -2,8 +2,8 @@ package frontend;
 
 import base.AccountService;
 import base.ValidatedServlet;
+import base.dataSets.UserDataSet;
 import main.AuthException;
-import main.UserProfile;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -41,7 +41,7 @@ public class SignInServlet extends ValidatedServlet {
                 String name = (String) requestJson.get("name");
                 String sid = request.getSession().getId();
                 try {
-                    UserProfile user = this.accountService.signIn(sid, name, (String) requestJson.get("password"));
+                    UserDataSet user = this.accountService.signIn(sid, name, (String) requestJson.get("password"));
                     user.hydrate(jsonBody);
                 } catch (AuthException e) {
                     status = HttpServletResponse.SC_UNAUTHORIZED;

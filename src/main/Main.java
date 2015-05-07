@@ -2,6 +2,7 @@ package main;
 
 import base.AccountService;
 import base.ScoreService;
+import dbService.DBServiceImpl;
 import freemarker.template.Configuration;
 import frontend.*;
 import mechanics.GameMechanicsImpl;
@@ -32,7 +33,7 @@ public class Main {
         }
         LOGGER.info("Starting at port: {}", port);
 
-        AccountService accountService = new AccountServiceImpl();
+        AccountService accountService = new AccountServiceDBImpl(new DBServiceImpl());
         ScoreService scoreService = new ScoreServiceImpl();
 
         ResourceSystem resourceSystem = ResourceSystem.getInstance();

@@ -2,9 +2,9 @@ package frontend;
 
 import base.AccountService;
 import base.GameMechanics;
+import base.dataSets.UserDataSet;
 import com.sun.istack.internal.Nullable;
 import main.NoUserException;
-import main.UserProfile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
@@ -28,7 +28,7 @@ public class GameWebSocketCreator implements WebSocketCreator {
     public Object createWebSocket(ServletUpgradeRequest request, ServletUpgradeResponse response) {
         String sid = request.getHttpServletRequest().getSession().getId();
         try {
-            UserProfile user = this.accountService.getUser(sid);
+            UserDataSet user = this.accountService.getUser(sid);
             GameWebSocket webSocket = new GameWebSocket(user, this.gameMechanics/*, this.webSocketService*/);
             webSocket.addListener(this.gameMechanics);
             return webSocket;

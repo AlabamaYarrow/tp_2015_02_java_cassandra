@@ -1,8 +1,8 @@
 package base;
 
+import base.dataSets.UserDataSet;
 import main.AccountServiceImpl;
 import main.AuthException;
-import main.UserProfile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,14 +19,14 @@ public abstract class UserProfileTest extends ServletTest {
         return ++UserProfileTest.counter;
     }
 
-    protected HttpServletRequest getSignedInRequest(UserProfile user, String json) throws Exception {
+    protected HttpServletRequest getSignedInRequest(UserDataSet user, String json) throws Exception {
         HttpServletRequest request = this.getMockedRequest(json);
         this.accountService.signIn(request.getSession().getId(), user.getName(), "topsecret");
         return request;
     }
 
-    protected UserProfile createUserProfile() {
-        UserProfile user = new UserProfile("john" + UserProfileTest.getUniqueCounter() + "@mail.com", "john" + UserProfileTest.getUniqueCounter(), "topsecret");
+    protected UserDataSet createUserProfile() {
+        UserDataSet user = new UserDataSet("john" + UserProfileTest.getUniqueCounter() + "@mail.com", "john" + UserProfileTest.getUniqueCounter(), "topsecret");
         try {
             this.accountService.addUser(user);
         } catch (AuthException e) {
@@ -35,7 +35,7 @@ public abstract class UserProfileTest extends ServletTest {
         return user;
     }
 
-    protected void checkUserProfileHydrated(UserProfile user, Map<Object, Object> hydrated) {
+    protected void checkUserProfileHydrated(UserDataSet user, Map<Object, Object> hydrated) {
         assertNotNull(hydrated);
         assertNotNull(hydrated.get("id"));
         assertEquals(user.getEmail(), hydrated.get("email"));

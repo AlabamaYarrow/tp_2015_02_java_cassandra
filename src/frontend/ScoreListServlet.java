@@ -3,10 +3,10 @@ package frontend;
 import base.AccountService;
 import base.ScoreService;
 import base.ValidatedServlet;
+import base.dataSets.UserDataSet;
 import com.sun.istack.internal.Nullable;
 import main.NoUserException;
 import main.Score;
-import main.UserProfile;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -71,7 +71,7 @@ public class ScoreListServlet extends ValidatedServlet {
         if (this.areRequiredFieldsValid(requestJson, jsonBody)) {
             try {
                 long userId = (Long) requestJson.get("user_id");
-                UserProfile user = this.accountService.getUserById((int) userId);
+                UserDataSet user = this.accountService.getUserById((int) userId);
                 long scoreValue = (Long) requestJson.get("score");
                 Score score = new Score(user, (int) scoreValue);
                 this.scoreService.addScore(score);

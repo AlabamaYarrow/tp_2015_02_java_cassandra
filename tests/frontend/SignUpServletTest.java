@@ -1,7 +1,7 @@
 package frontend;
 
 import base.UserProfileTest;
-import main.UserProfile;
+import base.dataSets.UserDataSet;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.junit.Test;
@@ -88,7 +88,7 @@ public class SignUpServletTest extends UserProfileTest {
         SignUpServlet signUp = new SignUpServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = this.createUserProfile();
+        UserDataSet user = this.createUserProfile();
         String requestJson = String.format("{ \"email\": \"%s\", \"name\": \"%s\", \"password\": \"topsecret\" }", user.getEmail(), user.getName());
         HttpServletRequest request = this.getMockedRequest(requestJson);
 
@@ -107,7 +107,7 @@ public class SignUpServletTest extends UserProfileTest {
         SignUpServlet signUp = new SignUpServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = this.createUserProfile();
+        UserDataSet user = this.createUserProfile();
         HttpServletRequest request = this.getSignedInRequest(user, "");
 
         signUp.doPost(request, response);
@@ -123,10 +123,10 @@ public class SignUpServletTest extends UserProfileTest {
         SignUpServlet signUp = new SignUpServlet(this.accountService);
 
         HttpServletResponse response = this.getMockedResponse();
-        UserProfile user = mock(UserProfile.class);
+        UserDataSet user = mock(UserDataSet.class);
         final String EMAIL = "tom@mail.com";
         final String NAME = "Thomas";
-        when(user.getID()).thenReturn(99901);
+        when(user.getID()).thenReturn(99901L);
         when(user.getEmail()).thenReturn(EMAIL);
         when(user.getName()).thenReturn(NAME);
         String requestJson = String.format("{ \"email\": \"%s\", \"name\": \"%s\", \"password\": \"topsecret\" }", EMAIL, NAME);

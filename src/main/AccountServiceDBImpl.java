@@ -1,25 +1,28 @@
 package main;
 
 import base.AccountService;
+import base.DBService;
 import base.dataSets.UserDataSet;
 import com.sun.istack.internal.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AccountServiceImpl implements AccountService {
-    private Map<Long, UserDataSet> usersById = new HashMap<>();
-    private Map<String, UserDataSet> usersByName = new HashMap<>();
+public class AccountServiceDBImpl implements AccountService {
+    private DBService dbService;
     private Map<String, UserDataSet> sessions = new HashMap<>();
+
+    public AccountServiceDBImpl(DBService dbService) {
+        this.dbService = dbService;
+    }
 
     @Override
     public void addUser(UserDataSet userProfile) throws AuthException {
         String userName = userProfile.getName();
-        if (this.usersByName.containsKey(userName)) {
+        if (this.dbService.has(userName)) {
             throw new AuthException();
         }
-        this.usersByName.put(userName, userProfile);
-        this.usersById.put(userProfile.getID(), userProfile);
+        this.dbService.save(userProfile);
     }
 
     @Override
@@ -51,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public UserDataSet getUserByName(String name) throws NoUserException {
-        UserDataSet user = this.usersByName.get(name);
+        UserDataSet user = this.dbService.readByName(name);
         if (null == user) {
             throw new NoUserException();
         }
@@ -60,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public long getUsersCount() {
-        return this.usersByName.size();
+        return this.dbService.getUsersCount();
     }
 
     @Override
@@ -71,7 +74,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @NotNull
     public UserDataSet getUserById(int userId) throws NoUserException {
-        UserDataSet user = this.usersById.get(userId);
+        UserDataSet user = this.dbService.read(userId);
         if (user == null) {
             throw new NoUserException();
         }
@@ -80,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void shutdown() {
-
+        this.dbService.shutdown();
     }
 
     @Override

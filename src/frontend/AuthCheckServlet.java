@@ -1,8 +1,8 @@
 package frontend;
 
 import base.AccountService;
+import base.dataSets.UserDataSet;
 import main.NoUserException;
-import main.UserProfile;
 import org.json.simple.JSONObject;
 
 import javax.servlet.ServletException;
@@ -29,7 +29,7 @@ public class AuthCheckServlet extends HttpServlet {
 
         int status = HttpServletResponse.SC_OK;
 
-        UserProfile user;
+        UserDataSet user;
         try {
             user = this.accountService.getUser(request.getSession().getId());
             user.hydrate(jsonBody);

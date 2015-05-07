@@ -1,16 +1,18 @@
 package main;
 
+import base.dataSets.UserDataSet;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Score implements Comparable {
     private static int id_counter = 0;
     private int id;
-    private UserProfile user;
+    private UserDataSet user;
 
     private int score;
 
-    public Score(UserProfile user, int score) {
+    public Score(UserDataSet user, int score) {
         this.id = ++Score.id_counter;
         this.score = score;
         this.user = user;
