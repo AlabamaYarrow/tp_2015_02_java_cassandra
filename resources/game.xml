@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class name="resources.GameResource">
-    <judgesCount>2</judgesCount>
-    <judgeBonus>1</judgeBonus>
+    <words>
+        <item>AJAX</item>
+        <item>browser</item>
+        <item>firefox</item>
+        <item>web</item>
+        <item>switch</item>
+        <item>42</item>
+        <item>Ethernet</item>
+        <item>Bitcoin</item>
+        <item>Java</item>
+        <item>neutrality</item>
+    </words>
 </class>

@@ -2,13 +2,20 @@ package resources;
 
 import base.Resource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameResource extends Resource {
-    public int judgesCount;
-    public int judgeBonus;
-    protected String name;
+    public List<String> words = new ArrayList<>();
+    private String path;
 
     @Override
-    public String getName() {
-        return name;
+    public String getPath() {
+        return this.path;
+    }
+
+    @Override
+    public void setPath(String path) {
+        this.path = path;
     }
 }

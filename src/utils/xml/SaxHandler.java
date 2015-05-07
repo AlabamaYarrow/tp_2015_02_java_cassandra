@@ -9,9 +9,12 @@ import utils.ReflectionHelper;
 
 public class SaxHandler extends DefaultHandler {
     private static String ROOT_ELEMENT = "class";
+    private static String ITEM_ELEMENT = "item";
     private static Logger LOGGER = LogManager.getLogger(SaxHandler.class);
     private String element = null;
     private Object object = null;
+    private boolean item = false;
+    private boolean list = false;
 
     public void startDocument() throws SAXException {
         LOGGER.debug("Start document");
@@ -25,22 +28,32 @@ public class SaxHandler extends DefaultHandler {
         if (qName.equals(ROOT_ELEMENT)) {
             String className = attributes.getValue(0);
             LOGGER.debug("Class name: {}", className);
-            object = ReflectionHelper.createInstance(className);
-            ReflectionHelper.setFieldValue(object, "name", className);
+            this.object = ReflectionHelper.createInstance(className);
+        } else if (qName.equals(ITEM_ELEMENT)) {
+            this.item = true;
         } else {
-            element = qName;
+            this.element = qName;
+            this.list = ReflectionHelper.isList(this.object, qName);
         }
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        element = null;
+        if (this.item) {
+            this.item = false;
+        } else {
+            this.element = null;
+            this.list = false;
+        }
     }
 
     public void characters(char ch[], int start, int length) throws SAXException {
-        if (element != null) {
-            String value = new String(ch, start, length);
+        String value = new String(ch, start, length);
+        if (this.item) {
+            LOGGER.debug("{} add \"{}\"", element, value);
+            ReflectionHelper.addToList(this.object, this.element, value);
+        } else if (this.element != null && !this.list) {
             LOGGER.debug("{} = {}", element, value);
-            ReflectionHelper.setFieldValue(object, element, value);
+            ReflectionHelper.setFieldValue(this.object, this.element, value);
         }
     }
 

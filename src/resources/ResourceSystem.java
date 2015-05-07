@@ -22,7 +22,7 @@ public class ResourceSystem {
             @Nullable
             Resource resource = ResourceFactory.getInstance().get(path);
             if (resource != null) {
-                this.RESOURCES.put(resource.getName(), resource);
+                this.RESOURCES.put(resource.getPath(), resource);
             }
         }
     }

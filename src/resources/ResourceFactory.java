@@ -21,6 +21,11 @@ public class ResourceFactory {
 
     @Nullable
     public Resource get(String path) {
-        return (Resource) XMLReader.read(path);
+        @Nullable
+        Resource resource = (Resource) XMLReader.read(path);
+        if (resource != null) {
+            resource.setPath(path);
+        }
+        return resource;
     }
 }
