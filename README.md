@@ -11,4 +11,9 @@ Game design was described [here (Russian).](doc/design-RU.md) Gaming protocol wa
 ## Developers
 * [Дунин Иван Владимирович](https://github.com/AlabamaYarrow), johnmoony@mail.ru
 * [Ермишкин Петр Владимирович](https://github.com/quasiyoke), quasiyoke@gmail.com
-* Криволапов Владислав ... , ... , ...
+
+## Installation
+
+    $ mysql
+    CREATE USER cassandra1@localhost IDENTIFIED BY "f348994nfwkqrf38";
+    CREATE DATABASE cassandra;
