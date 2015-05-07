@@ -2,20 +2,23 @@ package resources;
 
 import base.Resource;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GameResource extends Resource {
     public List<String> words = new ArrayList<>();
-    private String path;
+    private Iterator<String> wordsIterator;
 
-    @Override
-    public String getPath() {
-        return this.path;
-    }
-
-    @Override
-    public void setPath(String path) {
-        this.path = path;
+    public String getWord() {
+        if (this.wordsIterator == null) {
+            Collections.shuffle(this.words);
+            this.wordsIterator = this.words.iterator();
+        }
+        try {
+            return this.wordsIterator.next();
+        } catch (NoSuchElementException e) {
+            Collections.shuffle(this.words);
+            this.wordsIterator = this.words.iterator();
+            return this.wordsIterator.next();
+        }
     }
 }

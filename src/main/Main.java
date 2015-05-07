@@ -39,7 +39,7 @@ public class Main {
 
         Servlet admin = new AdminServlet(accountService, new PageGenerator("templates", new Configuration()), new Timer());
         Servlet authCheck = new AuthCheckServlet(accountService);
-        Servlet game = new WebSocketGameServlet(accountService, new GameMechanicsImpl((GameResource) resourceSystem.getResource("resources.GameResource")));
+        Servlet game = new WebSocketGameServlet(accountService, new GameMechanicsImpl((GameResource) resourceSystem.getResource("game.xml")));
         Servlet scoreDetail = new ScoreDetailServlet(scoreService);
         Servlet scoreList = new ScoreListServlet(scoreService, accountService);
         Servlet signIn = new SignInServlet(accountService);

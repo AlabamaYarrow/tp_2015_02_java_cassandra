@@ -22,7 +22,7 @@ public class ResourceSystem {
             @Nullable
             Resource resource = ResourceFactory.getInstance().get(path);
             if (resource != null) {
-                this.RESOURCES.put(resource.getPath(), resource);
+                this.RESOURCES.put(vfs.getName(path), resource);
             }
         }
     }
@@ -34,7 +34,7 @@ public class ResourceSystem {
         return ResourceSystem.instance;
     }
 
-    public Resource getResource(String name) {
-        return this.RESOURCES.get(name);
+    public Resource getResource(String path) {
+        return this.RESOURCES.get(path);
     }
 }
