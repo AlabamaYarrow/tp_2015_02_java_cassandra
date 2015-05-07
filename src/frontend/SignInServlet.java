@@ -17,7 +17,7 @@ import java.util.Map;
 public class SignInServlet extends ValidatedServlet {
 
     private static final String[] LOGIN_REQUIRED_FIELDS = {"name", "password",};
-    protected final AccountService accountService;
+    private final AccountService accountService;
 
     public SignInServlet(AccountService accountService) {
         super(SignInServlet.LOGIN_REQUIRED_FIELDS);

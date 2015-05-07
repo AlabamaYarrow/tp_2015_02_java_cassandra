@@ -14,11 +14,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class AdminServlet extends HttpServlet {
-    protected static final String TEMPLATE = "admin.ftl";
+    private static final String TEMPLATE = "admin.ftl";
 
-    protected final AccountService accountService;
-    protected final PageGenerator pageGenerator;
-    protected final Timer timer;
+    private final AccountService accountService;
+    private final PageGenerator pageGenerator;
+    private final Timer timer;
 
     public AdminServlet(AccountService accountService, PageGenerator pageGenerator, Timer timer) {
         this.accountService = accountService;

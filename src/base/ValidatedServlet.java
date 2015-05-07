@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ValidatedServlet extends HttpServlet {
 
-    protected final String[] REQUIRED_FIELDS;
+    private final String[] REQUIRED_FIELDS;
 
     protected ValidatedServlet(String[] requiredFields) {
         this.REQUIRED_FIELDS = requiredFields;

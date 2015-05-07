@@ -5,9 +5,9 @@ import base.Listenable;
 import java.util.Map;
 
 public class Event {
-    protected Listenable target;
-    protected String type;
-    protected Map<Object, Object> data;
+    private Listenable target;
+    private String type;
+    private Map<Object, Object> data;
 
     public Event(Listenable target, String type, Map<Object, Object> data) {
         this.target = target;

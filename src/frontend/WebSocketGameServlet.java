@@ -17,9 +17,9 @@ import java.util.Map;
 
 @WebServlet(name = "WebSocketGameServlet", urlPatterns = {"/api/v1/game/"})
 public class WebSocketGameServlet extends WebSocketServlet {
-    protected final static int IDLE_TIME = 3600 * 1000;
-    protected AccountService accountService;
-    protected GameMechanics gameMechanics;
+    private final static int IDLE_TIME = 3600 * 1000;
+    private AccountService accountService;
+    private GameMechanics gameMechanics;
 
     public WebSocketGameServlet(AccountService accountService, GameMechanics gameMechanics) {
         this.accountService = accountService;

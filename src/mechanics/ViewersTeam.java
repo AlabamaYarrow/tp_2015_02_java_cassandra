@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 public class ViewersTeam extends Team {
 
-    protected static final Logger LOGGER = LogManager.getLogger(ViewersTeam.class);
-    protected PlayersTeam players;
+    private static final Logger LOGGER = LogManager.getLogger(ViewersTeam.class);
+    private PlayersTeam players;
 
-    protected List<Object> getViewersHydrated() {
+    private List<Object> getViewersHydrated() {
         return this.users.stream()
                 .map(user -> user.getUserProfile().getHydrated())
                 .collect(Collectors.toCollection(Vector::new))
@@ -64,7 +64,7 @@ public class ViewersTeam extends Team {
         ((GameWebSocket) event.getTarget()).onEvent(viewerEvent);
     }
 
-    protected void onFlush(Event event) {
+    private void onFlush(Event event) {
         this.players = (PlayersTeam) event.getData().get("players");
     }
 }

@@ -26,10 +26,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @WebSocket
 public class GameWebSocket implements Listenable, Listener {
     private static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
-    protected UserProfile userProfile;
-    protected Session session;
-    protected GameMechanics gameMechanics;
-    protected List<Listener> listeners = new CopyOnWriteArrayList<>();
+    private UserProfile userProfile;
+    private Session session;
+    private GameMechanics gameMechanics;
+    private List<Listener> listeners = new CopyOnWriteArrayList<>();
 
     public GameWebSocket(UserProfile userProfile, GameMechanics gameMechanics) {
         this.userProfile = userProfile;
@@ -44,7 +44,7 @@ public class GameWebSocket implements Listenable, Listener {
         this.session.close();
     }
 
-    protected void notifyClient(String type, Map<Object, Object> body) {
+    private void notifyClient(String type, Map<Object, Object> body) {
         JSONObject json = new JSONObject();
         json.put("type", type);
         json.put("body", body);
@@ -55,40 +55,40 @@ public class GameWebSocket implements Listenable, Listener {
         }
     }
 
-    protected void onChatMessage(Event event) {
+    private void onChatMessage(Event event) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
         body.put("text", event.getData().get("text"));
         this.notifyClient("chat_message", body);
     }
 
-    protected void onChatStoppedTyping(Event event) {
+    private void onChatStoppedTyping(Event event) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
         this.notifyClient("chat_stopped_typing", body);
     }
 
-    protected void onChatTyping(Event event) {
+    private void onChatTyping(Event event) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
         this.notifyClient("chat_typing", body);
     }
 
-    protected void onPlayerStatus(Event event) {
+    private void onPlayerStatus(Event event) {
         this.notifyClient(event.getType(), ((PlayersTeam) event.getTarget()).getRoundHydrated(this));
     }
 
-    protected void onConnected(Event event) {
+    private void onConnected(Event event) {
         this.notifyClient("user_come", ((GameWebSocket) event.getTarget()).getUserProfile().getHydrated());
     }
 
-    protected void onClosed(Event event) {
+    private void onClosed(Event event) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
         this.notifyClient("user_gone", body);
     }
 
-    protected void onViewerStatus(Event event) {
+    private void onViewerStatus(Event event) {
         this.notifyClient(event.getType(), event.getData());
     }
 
@@ -140,7 +140,7 @@ public class GameWebSocket implements Listenable, Listener {
         }
     }
 
-    protected void notifyListeners(String type, Map<Object, Object> data) {
+    private void notifyListeners(String type, Map<Object, Object> data) {
         Event event = new Event(this, type, data);
         for (Listener listener : this.listeners) {
             listener.onEvent(event);

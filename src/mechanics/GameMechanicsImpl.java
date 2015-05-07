@@ -33,7 +33,7 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
-    protected void onClosed(Event event) {
+    private void onClosed(Event event) {
         GameWebSocket webSocket = (GameWebSocket) event.getTarget();
         Team team = this.webSocketsToTeams.get(webSocket);
         if (team instanceof ViewersTeam) {
@@ -42,11 +42,11 @@ public class GameMechanicsImpl implements GameMechanics {
         } else { // if team is PlayersTeam
             PlayersTeam incompleteTeam = (PlayersTeam) team;
             this.teams.remove(incompleteTeam);
-            List<GameWebSocket> users = incompleteTeam.getUsers();
+            List<GameWebSocket> users = incompleteTeam.getUsersCopy();
             users.remove(webSocket);
             this.webSocketsToTeams.remove(webSocket);
             incompleteTeam.flush(this.getTeamToViewAt());
-            List<GameWebSocket> viewers = this.viewersTeam.getUsers();
+            List<GameWebSocket> viewers = this.viewersTeam.getUsersCopy();
             if (viewers.size() == 0) {
                 users.forEach((viewer) -> {
                     this.viewersTeam.add(viewer);
@@ -63,9 +63,9 @@ public class GameMechanicsImpl implements GameMechanics {
         }
     }
 
-    protected void onConnected(Event event) {
+    private void onConnected(Event event) {
         GameWebSocket webSocket = (GameWebSocket) event.getTarget();
-        List<GameWebSocket> users = this.viewersTeam.getUsers();
+        List<GameWebSocket> users = this.viewersTeam.getUsersCopy();
         if (users.size() + 1 >= 2) {
             this.viewersTeam.flush(this.getTeamToViewAt());
             users.add(webSocket);
@@ -81,7 +81,7 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     @Nullable
-    protected PlayersTeam getTeamToViewAt() {
+    private PlayersTeam getTeamToViewAt() {
         return this.teams.peekFirst();
     }
 }

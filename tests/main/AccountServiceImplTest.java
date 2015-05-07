@@ -13,10 +13,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceImplTest extends TestCase {
 
-    protected static final String SID = "foobar";
+    private static final String SID = "foobar";
 
     @Mock
-    protected UserProfile user;
+    private UserProfile user;
 
     public void testIsAuthorized() throws Exception {
         AccountService accountService = new AccountServiceImpl();

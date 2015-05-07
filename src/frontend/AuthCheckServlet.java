@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class AuthCheckServlet extends HttpServlet {
 
-    protected final AccountService accountService;
+    private final AccountService accountService;
 
     public AuthCheckServlet(AccountService accountService) {
         this.accountService = accountService;

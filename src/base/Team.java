@@ -16,7 +16,7 @@ public abstract class Team implements Listener {
     private static final Logger LOGGER = LogManager.getLogger(Team.class);
     protected List<GameWebSocket> users = new Vector<>();
 
-    public List<GameWebSocket> getUsers() {
+    public List<GameWebSocket> getUsersCopy() {
         return new Vector<>(this.users);
     }
 
@@ -47,19 +47,19 @@ public abstract class Team implements Listener {
         }
     }
 
-    protected void onClosed(Event event) {
+    private void onClosed(Event event) {
         this.notifyListeners(event);
     }
 
-    protected void onChatTyping(Event event) {
+    private void onChatTyping(Event event) {
         this.notifyListeners(event);
     }
 
-    protected void onChatStoppedTyping(Event event) {
+    private void onChatStoppedTyping(Event event) {
         this.notifyListeners(event);
     }
 
-    protected void onChatMessage(Event event) {
+    private void onChatMessage(Event event) {
         this.notifyListeners(event);
     }
 

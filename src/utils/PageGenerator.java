@@ -16,8 +16,8 @@ public class PageGenerator {
 
     static final Logger LOGGER = LogManager.getLogger(PageGenerator.class);
 
-    protected final String TEMPLATES_DIR;
-    protected final Configuration CFG;
+    private final String TEMPLATES_DIR;
+    private final Configuration CFG;
 
     public PageGenerator(String templatesDir, Configuration configuration) {
         this.TEMPLATES_DIR = templatesDir;

@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserProfile {
-    protected static int idCounter = 0;
-    protected int id;
-    protected String email;
-    protected String name;
-    protected String password;
-    protected int scoreTotal;
+    private static int idCounter = 0;
+    private int id;
+    private String email;
+    private String name;
+    private String password;
+    private int scoreTotal;
 
     public UserProfile(String email, String name, String password) {
         this.id = UserProfile.getUniqueId();
@@ -19,7 +19,7 @@ public class UserProfile {
         this.scoreTotal = 0;
     }
 
-    protected static int getUniqueId() {
+    private static int getUniqueId() {
         return ++UserProfile.idCounter;
     }
 

@@ -12,10 +12,10 @@ import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 
 public class GameWebSocketCreator implements WebSocketCreator {
-    //protected WebSocketService webSocketService;
+    //private WebSocketService webSocketService;
     private static final Logger LOGGER = LogManager.getLogger(GameWebSocketCreator.class);
-    protected AccountService accountService;
-    protected GameMechanics gameMechanics;
+    private AccountService accountService;
+    private GameMechanics gameMechanics;
 
     public GameWebSocketCreator(AccountService accountService, GameMechanics gameMechanics/*, WebSocketService webSocketService*/) {
         this.accountService = accountService;

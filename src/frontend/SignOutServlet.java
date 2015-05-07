@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class SignOutServlet extends HttpServlet {
 
-    protected final AccountService accountService;
+    private final AccountService accountService;
 
     public SignOutServlet(AccountService accountService) {
         this.accountService = accountService;

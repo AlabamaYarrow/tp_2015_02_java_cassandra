@@ -17,7 +17,7 @@ import java.util.Map;
 public class SignUpServlet extends ValidatedServlet {
 
     private static final String[] SIGNUP_REQUIRED_FIELDS = {"email", "name", "password",};
-    protected final AccountService accountService;
+    private final AccountService accountService;
 
     public SignUpServlet(AccountService accountService) {
         super(SignUpServlet.SIGNUP_REQUIRED_FIELDS);

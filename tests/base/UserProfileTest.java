@@ -11,11 +11,11 @@ import java.util.Map;
 
 public abstract class UserProfileTest extends ServletTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger(UserProfileTest.class);
-    protected static int counter = 0;
+    private static final Logger LOGGER = LogManager.getLogger(UserProfileTest.class);
+    private static int counter = 0;
     protected AccountService accountService = new AccountServiceImpl();
 
-    protected static int getUniqueCounter() {
+    private static int getUniqueCounter() {
         return ++UserProfileTest.counter;
     }
 

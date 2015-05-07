@@ -20,17 +20,17 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class PageGeneratorTest extends TestCase {
 
-    protected static final Map<String, Object> DATA = new HashMap<>();
-    protected static final String FILENAME = "some_template.html";
-    protected static final String TEMPLATES_DIR = "/my/templates_dir";
+    private static final Map<String, Object> DATA = new HashMap<>();
+    private static final String FILENAME = "some_template.html";
+    private static final String TEMPLATES_DIR = "/my/templates_dir";
 
     @Mock
-    protected Configuration configuration;
+    private Configuration configuration;
 
-    protected PageGenerator pageGenerator;
+    private PageGenerator pageGenerator;
 
     @Mock
-    protected Template template;
+    private Template template;
 
     @Before
     public void setUp() {
