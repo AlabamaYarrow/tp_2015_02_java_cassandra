@@ -56,7 +56,7 @@ public class GameMechanicsImpl implements GameMechanics {
                 GameWebSocket player = viewers.get(0);
                 this.viewersTeam.remove(player);
                 users.add(player);
-                PlayersTeam playersTeam = new PlayersTeam(users);
+                PlayersTeam playersTeam = new PlayersTeam(users, this.resource.getWord());
                 this.teams.add(playersTeam);
                 users.forEach((p) -> this.webSocketsToTeams.put(p, playersTeam));
             }
@@ -69,7 +69,7 @@ public class GameMechanicsImpl implements GameMechanics {
         if (users.size() + 1 >= 2) {
             this.viewersTeam.flush(this.getTeamToViewAt());
             users.add(webSocket);
-            PlayersTeam team = new PlayersTeam(users);
+            PlayersTeam team = new PlayersTeam(users, this.resource.getWord());
             for (GameWebSocket player : users) {
                 this.webSocketsToTeams.put(player, team);
             }

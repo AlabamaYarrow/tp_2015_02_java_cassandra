@@ -5,24 +5,28 @@ import base.Listener;
 import base.Team;
 import com.sun.istack.internal.Nullable;
 import frontend.GameWebSocket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 public class PlayersTeam extends Team implements Listenable {
-    protected GameWebSocket artist;
-    protected GameWebSocket cassandra;
-    protected List<GameWebSocket> judges;
-    protected String secret;
-    protected List<Listener> listeners = new CopyOnWriteArrayList<>();
+    private static final Logger LOGGER = LogManager.getLogger(PlayersTeam.class);
+    private GameWebSocket artist;
+    private GameWebSocket cassandra;
+    private String secret;
+    private List<Listener> listeners = new CopyOnWriteArrayList<>();
 
-    public PlayersTeam(List<GameWebSocket> users) {
+    public PlayersTeam(List<GameWebSocket> users, String secret) {
         this.users = users;
         Collections.shuffle(users);
         this.artist = users.get(0);
         this.cassandra = users.get(1);
-        this.judges = users.subList(2, users.size());
+        this.secret = secret;
         this.notifyPlayerStatus();
     }
 
@@ -39,16 +43,7 @@ public class PlayersTeam extends Team implements Listenable {
             round.put("role", "artist");
         } else if (recipient == this.cassandra) {
             round.put("role", "cassandra");
-        } else if (this.judges.contains(recipient)) {
-            round.put("role", "judge");
         }
-        List<Object> judges = new Vector<>();
-        round.put("judges", judges);
-        judges.addAll(this.judges.stream()
-                        .filter(judgeWebSocket -> recipient != judgeWebSocket)
-                        .map(judgeWebSocket -> judgeWebSocket.getUserProfile().getHydrated())
-                        .collect(Collectors.toList())
-        );
         return round;
     }
 
@@ -58,8 +53,8 @@ public class PlayersTeam extends Team implements Listenable {
 
     @Override
     protected void notifyListeners(String type, Map<Object, Object> data) {
-        super.notifyListeners(type, data);
         Event event = new Event(this, type, data);
+        super.notifyListeners(event);
         for (Listener listener : this.listeners) {
             listener.onEvent(event);
         }
