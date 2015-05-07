@@ -17,3 +17,4 @@ Game design was described [here (Russian).](doc/design-RU.md) Gaming protocol wa
     $ mysql
     CREATE USER cassandra1@localhost IDENTIFIED BY "f348994nfwkqrf38";
     CREATE DATABASE cassandra;
+    GRANT ALL ON cassandra.* TO cassandra1@localhost;
