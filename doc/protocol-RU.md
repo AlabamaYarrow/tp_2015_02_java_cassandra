@@ -477,3 +477,26 @@
       }
     }
     ```
+
+1. Художник осуществил изменение на своем изображении
+  
+    ```javascript
+    {
+      type: "new_curve",
+      body: {
+        clear: false,
+        color: "#00ff00",
+        width: 25,
+        start: {
+          x: 0,
+          y: 0
+        },
+        lines: [
+          {
+            x: 1,
+            y: 1
+          }
+        ]
+      }
+    }
+    ```
