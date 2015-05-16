@@ -55,6 +55,10 @@ public class GameWebSocket implements Listenable, Listener {
         }
     }
 
+    private void onNewCurve(Event event){
+        this.notifyClient("new_curve", event.getData());
+    }
+
     private void onChatMessage(Event event) {
         Map<Object, Object> body = new HashMap<>();
         body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
@@ -134,7 +138,9 @@ public class GameWebSocket implements Listenable, Listener {
                 return;
             }
             this.notifyListeners("chat_message", body);
-        } else {
+        } else if ("new_curve".equals(type)) {
+            this.notifyListeners("new_curve", body);
+        }else {
             LOGGER.error("Unknown WebSocket message type.");
             this.closeSession();
         }
@@ -174,7 +180,9 @@ public class GameWebSocket implements Listenable, Listener {
             this.onChatTyping(event);
         } else if ("chat_stopped_typing".equals(type)) {
             this.onChatStoppedTyping(event);
-        } else {
+        } else if ("new_curve".equals(type)) {
+            this.onNewCurve(event);
+        }else {
             LOGGER.debug("Unknown event: {} {}", type, event.getData());
         }
     }
