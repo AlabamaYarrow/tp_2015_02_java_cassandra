@@ -26,6 +26,10 @@ public class PlayersTeam extends Team implements Listenable {
         Collections.shuffle(users);
         this.artist = users.get(0);
         this.cassandra = users.get(1);
+
+        this.artist.addListener(this);
+        this.cassandra.addListener(this);
+
         this.secret = secret;
         this.notifyPlayerStatus();
     }
@@ -47,6 +51,44 @@ public class PlayersTeam extends Team implements Listenable {
         return round;
     }
 
+    @Override
+    public void onEvent(Event event) {
+        String type = event.getType();
+        if ("round_finished".equals(type)) {
+            this.onRoundFinished();
+        } else if ("new_curve".equals(type)) {
+            this.onNewCurve(event);
+        } else if ("prompt_status".equals(type)) {
+            this.onPromptStatus(event);
+        } else if ("cassandra_decided".equals(type)) {
+            this.onCassandraDecided(event);
+        } else {
+            super.onEvent(event);
+        }
+    }
+
+    private void onRoundFinished() {
+        Map<Object, Object> body = new HashMap<>();
+        body.put("artist", this.artist.getUserProfile().getHydrated());
+        body.put("cassandra", this.cassandra.getUserProfile().getHydrated());
+        body.put("secret", this.secret);
+
+        super.notifyListeners("round_finished", body);
+    }
+
+
+    private void onNewCurve(Event event){
+        this.notifyListeners(event);
+    }
+
+    private void onPromptStatus(Event event) {
+        this.notifyListeners(event);
+    }
+
+    private void onCassandraDecided(Event event) {
+        this.notifyListeners(event);
+    }
+
     public void notifyPlayerStatus() {
         this.notifyListeners("player_status", null);
     }
@@ -54,6 +96,11 @@ public class PlayersTeam extends Team implements Listenable {
     @Override
     protected void notifyListeners(String type, Map<Object, Object> data) {
         Event event = new Event(this, type, data);
+        this.notifyListeners(event);
+    }
+
+    @Override
+    protected void notifyListeners(Event event) {
         super.notifyListeners(event);
         for (Listener listener : this.listeners) {
             listener.onEvent(event);

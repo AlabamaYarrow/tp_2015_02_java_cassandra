@@ -55,15 +55,24 @@ public class GameWebSocket implements Listenable, Listener {
         }
     }
 
+    private  void onRoundFinished(Event event) {
+        this.notifyClient("round_finished", event.getData());
+    }
+
     private void onNewCurve(Event event){
         this.notifyClient("new_curve", event.getData());
     }
 
+    private void onPromptStatus(Event event) {
+        this.notifyClient("prompt_status", event.getData());
+    }
+
+    private void onCassandraDecided(Event event) {
+        this.notifyClient("cassandra_decided", event.getData());
+    }
+
     private void onChatMessage(Event event) {
-        Map<Object, Object> body = new HashMap<>();
-        body.put("id", ((GameWebSocket) event.getTarget()).getUserProfile().getID());
-        body.put("text", event.getData().get("text"));
-        this.notifyClient("chat_message", body);
+        this.notifyClient("chat_message", event.getData());
     }
 
     private void onChatStoppedTyping(Event event) {
@@ -124,7 +133,9 @@ public class GameWebSocket implements Listenable, Listener {
             this.notifyListeners("chat_typing", null);
         } else if ("chat_stopped_typing".equals(type)) {
             this.notifyListeners("chat_stopped_typing", null);
-        } else if ("chat_message".equals(type)) {
+        } else if ( ("chat_message".equals(type)) ||
+                    ("prompt_status".equals(type)) ||
+                    ("cassandra_decided".equals(type)) ){
             @Nullable String messageText;
             try {
                 messageText = (String) body.get("text");
@@ -137,10 +148,12 @@ public class GameWebSocket implements Listenable, Listener {
                 this.closeSession();
                 return;
             }
-            this.notifyListeners("chat_message", body);
+            this.notifyListeners(type, body);
         } else if ("new_curve".equals(type)) {
             this.notifyListeners("new_curve", body);
-        }else {
+        } else if ("round_finished".equals(type)) {
+            this.notifyListeners("round_finished", body);
+        } else {
             LOGGER.error("Unknown WebSocket message type.");
             this.closeSession();
         }
@@ -182,7 +195,13 @@ public class GameWebSocket implements Listenable, Listener {
             this.onChatStoppedTyping(event);
         } else if ("new_curve".equals(type)) {
             this.onNewCurve(event);
-        }else {
+        } else if ("prompt_status".equals(type)) {
+            this.onPromptStatus(event);
+        } else if ("cassandra_decided".equals(type)) {
+            this.onCassandraDecided(event);
+        } else if ("round_finished".equals(type)) {
+            this.onRoundFinished(event);
+        } else {
             LOGGER.debug("Unknown event: {} {}", type, event.getData());
         }
     }

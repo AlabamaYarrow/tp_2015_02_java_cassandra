@@ -66,20 +66,21 @@ public class GameMechanicsImpl implements GameMechanics {
     private void onConnected(Event event) {
         GameWebSocket webSocket = (GameWebSocket) event.getTarget();
         List<GameWebSocket> users = this.viewersTeam.getUsersCopy();
-        for (GameWebSocket user : users) {
-            webSocket.addListener(user);
-            user.addListener(webSocket);
-        }
+
         if (users.size() + 1 >= 2) {
             this.viewersTeam.flush(this.getTeamToViewAt());
             users.add(webSocket);
             PlayersTeam team = new PlayersTeam(users, this.resource.getWord());
+
             for (GameWebSocket player : users) {
                 this.webSocketsToTeams.put(player, team);
             }
             this.teams.add(team);
         } else {
             this.viewersTeam.add(webSocket);
+            if ( this.getTeamToViewAt() != null) {
+                this.getTeamToViewAt().addListener(webSocket);
+            }
             this.webSocketsToTeams.put(webSocket, this.viewersTeam);
         }
     }
