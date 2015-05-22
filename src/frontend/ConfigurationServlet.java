@@ -4,6 +4,7 @@ import base.AccountService;
 import base.dataSets.UserDataSet;
 import main.NoUserException;
 import org.json.simple.JSONObject;
+import resources.ConfigurationResource;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,12 +14,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthCheckServlet extends HttpServlet {
+public class ConfigurationServlet extends HttpServlet {
 
     private final AccountService accountService;
+    private final ConfigurationResource RESOURCE;
 
-    public AuthCheckServlet(AccountService accountService) {
+    public ConfigurationServlet(AccountService accountService, ConfigurationResource resource) {
         this.accountService = accountService;
+        this.RESOURCE = resource;
     }
 
     public void doGet(HttpServletRequest request,
@@ -32,10 +35,11 @@ public class AuthCheckServlet extends HttpServlet {
         UserDataSet user;
         try {
             user = this.accountService.getUser(request.getSession().getId());
-            user.hydrate(jsonBody);
+            jsonBody.put("user", user.getHydrated());
         } catch (NoUserException e) {
             status = HttpServletResponse.SC_UNAUTHORIZED;
         }
+        jsonBody.put("game_web_socket_url", this.RESOURCE.gameWebSocketUrl);
         json.put("status", status);
         response.setStatus(status);
         response.getWriter().print(json.toJSONString());

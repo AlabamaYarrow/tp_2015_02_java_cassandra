@@ -14,6 +14,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import resources.ConfigurationResource;
 import resources.DBResource;
 import resources.GameResource;
 import resources.ResourceSystem;
@@ -41,7 +42,10 @@ public class Main {
         ScoreService scoreService = new ScoreServiceImpl();
 
         Servlet admin = new AdminServlet(accountService, new PageGenerator("templates", new Configuration()), new Timer());
-        Servlet authCheck = new AuthCheckServlet(accountService);
+
+        ConfigurationResource configurationResource = (ConfigurationResource)resourceSystem.getResource("configuration.xml");
+        Servlet configuration = new ConfigurationServlet(accountService, configurationResource);
+
         Servlet game = new WebSocketGameServlet(accountService, new GameMechanicsImpl((GameResource) resourceSystem.getResource("game.xml")));
         Servlet scoreDetail = new ScoreDetailServlet(scoreService);
         Servlet scoreList = new ScoreListServlet(scoreService, accountService);
@@ -51,8 +55,8 @@ public class Main {
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(admin), "/admin/");
-        context.addServlet(new ServletHolder(authCheck), "/api/v1/auth/check/");
-        context.addServlet(new ServletHolder(game), "/api/v1/game/");
+        context.addServlet(new ServletHolder(configuration), "/api/v1/configuration/");
+        context.addServlet(new ServletHolder(game), configurationResource.getGameWebSocketPath());
         context.addServlet(new ServletHolder(scoreList), "/api/v1/scores/");
         context.addServlet(new ServletHolder(scoreDetail), "/api/v1/scores/*");
         context.addServlet(new ServletHolder(signIn), "/api/v1/auth/signin/");
