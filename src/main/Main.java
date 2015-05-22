@@ -14,6 +14,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import resources.DBResource;
 import resources.GameResource;
 import resources.ResourceSystem;
 import utils.PageGenerator;
@@ -33,10 +34,11 @@ public class Main {
         }
         LOGGER.info("Starting at port: {}", port);
 
-        AccountService accountService = new AccountServiceDBImpl(new DBServiceImpl());
-        ScoreService scoreService = new ScoreServiceImpl();
-
         ResourceSystem resourceSystem = ResourceSystem.getInstance();
+
+        DBResource dbResource = (DBResource)resourceSystem.getResource("db.xml");
+        AccountService accountService = new AccountServiceDBImpl(new DBServiceImpl(dbResource));
+        ScoreService scoreService = new ScoreServiceImpl();
 
         Servlet admin = new AdminServlet(accountService, new PageGenerator("templates", new Configuration()), new Timer());
         Servlet authCheck = new AuthCheckServlet(accountService);

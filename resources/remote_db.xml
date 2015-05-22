@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class name="resources.DBResource">
+    <url>jdbc:mysql://localhost:3306/java_2015_02_g05_db</url>
+    <username>java_2015_02_g05</username>
+    <password>java_2015_02_g05_db</password>
+</class>
