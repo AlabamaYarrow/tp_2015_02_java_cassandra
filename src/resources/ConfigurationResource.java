@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ConfigurationResource extends Resource {
-    private static final Pattern PATH_PATTERN = Pattern.compile("//[^/]+/(.*)$");
+    private static final Pattern PATH_PATTERN = Pattern.compile("//[^/]+(/.*)$");
     public String gameWebSocketUrl;
 
     public String getGameWebSocketPath() {

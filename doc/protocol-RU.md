@@ -122,9 +122,11 @@
 }
 ```
 
-## Проверка авторизации и игрового состояния
+## Запрос конфигурации
 
-    /api/v<НОМЕР_ВЕРСИИ>/auth/check/
+    /api/v<НОМЕР_ВЕРСИИ>/configuration/
+
+Попутно выполняется проверка авторизации и игрового состояния.
 
 ### Пример GET-запроса
 
@@ -140,10 +142,13 @@
 {
     status: 200,
     body: {
-        id: 2,
-        name: "Vasya",
-        email: "vasya@mail.ru",
-        score: 100500
+        game_web_socket_url: "http://example.com/api/v1/game/",
+        user: {
+            id: 2,
+            name: "Vasya",
+            email: "vasya@mail.ru",
+            score: 100500
+        }
     }
 }
 ```
@@ -155,7 +160,9 @@
 ```javascript
 {
     status: 401,
-    body: {}
+    body: {
+        game_web_socket_url: "http://example.com/api/v1/game/"
+    }
 }
 ```
 

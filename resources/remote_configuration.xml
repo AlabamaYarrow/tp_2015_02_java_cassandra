@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class name="resources.ConfigurationResource">
-    <gameWebSocketUrl>ws://localhost:8100/api/v1/game/</gameWebSocketUrl>
+    <gameWebSocketUrl>ws://g05.javaprojects.tp-dev.ru/api/v1/game/</gameWebSocketUrl>
 </class>
