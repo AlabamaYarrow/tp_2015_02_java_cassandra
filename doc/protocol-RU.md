@@ -132,7 +132,8 @@
 
     Без параметров
 
-Ответ сервера будет зависеть от того, в каком игровом состоянии находится пользователь:
+В любом случае сообщает абсолютный путь до игрового WebSocket'а. В остальном ответ сервера будет
+зависеть от того, в каком игровом состоянии находится пользователь:
 
 #### Авторизован
 
@@ -142,7 +143,7 @@
 {
     status: 200,
     body: {
-        game_web_socket_url: "http://example.com/api/v1/game/",
+        game_web_socket_url: "ws://example.com/api/v1/game/",
         user: {
             id: 2,
             name: "Vasya",
@@ -161,7 +162,7 @@
 {
     status: 401,
     body: {
-        game_web_socket_url: "http://example.com/api/v1/game/"
+        game_web_socket_url: "ws://example.com/api/v1/game/"
     }
 }
 ```
