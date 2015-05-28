@@ -1,10 +1,13 @@
 package main;
 
 import base.AccountService;
+import base.GameMechanics;
 import base.ScoreService;
 import dbService.DBServiceImpl;
 import freemarker.template.Configuration;
 import frontend.*;
+import frontend.console.ConsoleService;
+import frontend.console.WebSocketConsoleServlet;
 import mechanics.GameMechanicsImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,7 +49,13 @@ public class Main {
         ConfigurationResource configurationResource = (ConfigurationResource)resourceSystem.getResource("configuration.xml");
         Servlet configuration = new ConfigurationServlet(accountService, configurationResource);
 
-        Servlet game = new WebSocketGameServlet(accountService, new GameMechanicsImpl((GameResource) resourceSystem.getResource("game.xml")));
+        ConsoleService consoleService = new ConsoleService();
+        Servlet console = new WebSocketConsoleServlet(accountService, consoleService);
+
+        GameResource gameResource = (GameResource) resourceSystem.getResource("game.xml");
+        GameMechanics gameMechanics = new GameMechanicsImpl(gameResource);
+        Servlet game = new WebSocketGameServlet(accountService, gameMechanics);
+
         Servlet scoreDetail = new ScoreDetailServlet(scoreService);
         Servlet scoreList = new ScoreListServlet(scoreService, accountService);
         Servlet signIn = new SignInServlet(accountService);
@@ -56,6 +65,7 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(admin), "/admin/");
         context.addServlet(new ServletHolder(configuration), "/api/v1/configuration/");
+        context.addServlet(new ServletHolder(console), configurationResource.getConsoleWebSocketPath());
         context.addServlet(new ServletHolder(game), configurationResource.getGameWebSocketPath());
         context.addServlet(new ServletHolder(scoreList), "/api/v1/scores/");
         context.addServlet(new ServletHolder(scoreDetail), "/api/v1/scores/*");

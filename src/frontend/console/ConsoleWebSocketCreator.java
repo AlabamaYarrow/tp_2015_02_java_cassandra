@@ -1,9 +1,10 @@
-package frontend;
+package frontend.console;
 
 import base.AccountService;
 import base.GameMechanics;
 import base.dataSets.UserDataSet;
 import com.sun.istack.internal.Nullable;
+import frontend.GameWebSocket;
 import main.NoUserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,14 +12,14 @@ import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 
-public class GameWebSocketCreator implements WebSocketCreator {
-    private static final Logger LOGGER = LogManager.getLogger(GameWebSocketCreator.class);
+public class ConsoleWebSocketCreator implements WebSocketCreator {
+    private static final Logger LOGGER = LogManager.getLogger(ConsoleWebSocketCreator.class);
     private AccountService accountService;
-    private GameMechanics gameMechanics;
+    private ConsoleService consoleService;
 
-    public GameWebSocketCreator(AccountService accountService, GameMechanics gameMechanics) {
+    public ConsoleWebSocketCreator(AccountService accountService, ConsoleService consoleService) {
         this.accountService = accountService;
-        this.gameMechanics = gameMechanics;
+        this.consoleService = consoleService;
     }
 
     @Override
@@ -27,11 +28,10 @@ public class GameWebSocketCreator implements WebSocketCreator {
         String sid = request.getHttpServletRequest().getSession().getId();
         try {
             UserDataSet user = this.accountService.getUser(sid);
-            GameWebSocket webSocket = new GameWebSocket(user, this.gameMechanics/*, this.webSocketService*/);
-            webSocket.addListener(this.gameMechanics);
+            ConsoleWebSocket webSocket = new ConsoleWebSocket(user, this.consoleService);
             return webSocket;
         } catch (NoUserException e) {
-            LOGGER.error("GameWebSocketCreator accepts only authorized users.", e);
+            LOGGER.error("ConsoleWebSocketCreator accepts only authorized users.", e);
             return null;
         }
     }

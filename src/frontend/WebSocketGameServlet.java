@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "WebSocketGameServlet", urlPatterns = {"/api/v1/game/"})
+@WebServlet(name = "WebSocketGameServlet")
 public class WebSocketGameServlet extends WebSocketServlet {
     private final static int IDLE_TIME = 3600 * 1000;
     private AccountService accountService;

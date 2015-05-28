@@ -1,5 +1,7 @@
 package base.dataSets;
 
+import frontend.console.ConsoleWebSocket;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashMap;
