@@ -1,12 +1,6 @@
 package frontend.console;
 
-import base.GameMechanics;
-import base.Listenable;
-import base.Listener;
 import base.dataSets.UserDataSet;
-import com.sun.istack.internal.Nullable;
-import mechanics.Event;
-import mechanics.PlayersTeam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
@@ -18,10 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @WebSocket
 public class ConsoleWebSocket {
@@ -35,14 +26,6 @@ public class ConsoleWebSocket {
         this.userProfile = userProfile;
         this.consoleService = consoleService;
         this.initial = !consoleService.contains(userProfile);
-    }
-
-    public UserDataSet getUserProfile() {
-        return userProfile;
-    }
-
-    public void closeSession() {
-        this.session.close();
     }
 
     private void notifyClient(String type, Map<Object, Object> body) {

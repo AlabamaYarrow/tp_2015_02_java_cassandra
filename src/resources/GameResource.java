@@ -2,23 +2,15 @@ package resources;
 
 import base.Resource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class GameResource extends Resource {
     public List<String> words = new ArrayList<>();
-    private Iterator<String> wordsIterator;
+    private Random random = new Random();
 
     public String getWord() {
-        if (this.wordsIterator == null) {
-            Collections.shuffle(this.words);
-            this.wordsIterator = this.words.iterator();
-        }
-        try {
-            return this.wordsIterator.next();
-        } catch (NoSuchElementException e) {
-            Collections.shuffle(this.words);
-            this.wordsIterator = this.words.iterator();
-            return this.wordsIterator.next();
-        }
+        return this.words.get(this.random.nextInt(this.words.size()));
     }
 }
