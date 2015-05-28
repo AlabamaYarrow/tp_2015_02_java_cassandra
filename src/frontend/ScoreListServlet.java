@@ -1,8 +1,8 @@
 package frontend;
 
 import base.AccountService;
+import base.RequestValidator;
 import base.ScoreService;
-import base.ValidatedServlet;
 import base.dataSets.UserDataSet;
 import com.sun.istack.internal.Nullable;
 import main.NoUserException;
@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,16 +20,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ScoreListServlet extends ValidatedServlet {
+public class ScoreListServlet extends HttpServlet {
 
     private static final String[] REQUIRED_FIELDS = {"int score", "int user_id"};
+    private static final RequestValidator VALIDATOR = new RequestValidator(REQUIRED_FIELDS);
     private final AccountService accountService;
     private final ScoreService scoreService;
 
     public ScoreListServlet(ScoreService scoreService, AccountService accountService) {
-        super(ScoreListServlet.REQUIRED_FIELDS);
         this.accountService = accountService;
         this.scoreService = scoreService;
+
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -68,7 +70,7 @@ public class ScoreListServlet extends ValidatedServlet {
         int status = HttpServletResponse.SC_OK;
 
         Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
-        if (this.areRequiredFieldsValid(requestJson, jsonBody)) {
+        if (ScoreListServlet.VALIDATOR.areRequiredFieldsValid(requestJson, jsonBody)) {
             try {
                 long userId = (Long) requestJson.get("user_id");
                 UserDataSet user = this.accountService.getUserById((int) userId);

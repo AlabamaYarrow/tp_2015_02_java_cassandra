@@ -1,26 +1,27 @@
 package frontend;
 
+import base.RequestValidator;
 import base.ScoreService;
-import base.ValidatedServlet;
 import main.NoScoreException;
 import main.Score;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ScoreDetailServlet extends ValidatedServlet {
+public class ScoreDetailServlet extends HttpServlet {
 
     private final static String[] REQUIRED_FIELDS = {"score"};
+    private final static RequestValidator VALIDATOR = new RequestValidator(REQUIRED_FIELDS);
     private final ScoreService scoreService;
 
     public ScoreDetailServlet(ScoreService scoreService) {
-        super(ScoreDetailServlet.REQUIRED_FIELDS);
         this.scoreService = scoreService;
     }
 
@@ -59,7 +60,7 @@ public class ScoreDetailServlet extends ValidatedServlet {
         Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
         if (pathParts.length != 1) {
             status = HttpServletResponse.SC_NOT_FOUND;
-        } else if (!this.areRequiredFieldsValid(requestJson, jsonBody)) {
+        } else if (!ScoreDetailServlet.VALIDATOR.areRequiredFieldsValid(requestJson, jsonBody)) {
             status = HttpServletResponse.SC_BAD_REQUEST;
         } else {
             try {

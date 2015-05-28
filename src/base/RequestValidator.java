@@ -1,29 +1,38 @@
 package base;
 
-import javax.servlet.http.HttpServlet;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ValidatedServlet extends HttpServlet {
+public class RequestValidator {
 
-    private final String[] REQUIRED_FIELDS;
+    private String[] requiredFields;
 
-    protected ValidatedServlet(String[] requiredFields) {
-        this.REQUIRED_FIELDS = requiredFields;
+    public RequestValidator(String[] requiredFields) {
+        this.requiredFields = requiredFields;
     }
 
     /**
      * @return isValid
      */
-    protected boolean areRequiredFieldsValid(Map<Object, Object> request, Map<Object, Object> jsonBody) {
+    public boolean areRequiredFieldsValid(Map<Object, Object> request, Map<Object, Object> jsonBody) {
         boolean isValid = true;
-        for (String name : this.REQUIRED_FIELDS) {
+        for (String name : this.requiredFields) {
             boolean integerType = name.startsWith("int ");
             if (integerType) {
                 name = name.substring(4, name.length());
             }
             Object valueObj = request.get(name);
             try {
+                if (valueObj == null || (!integerType && ((String) valueObj).isEmpty())) {
+                    isValid = false;
+                    Map<Object, Object> error = new HashMap<>();
+                    jsonBody.put(name, error);
+                    error.put("error", "required");
+                    if (!"password".equals(name)) {
+                        error.put("value", valueObj);
+                    }
+                    continue;
+                }
                 if (integerType) {
                     long value = (Long) valueObj;
                 } else {
@@ -38,15 +47,6 @@ public class ValidatedServlet extends HttpServlet {
                     error.put("value", valueObj);
                 }
                 continue;
-            }
-            if (valueObj == null || (!integerType && ((String) valueObj).isEmpty())) {
-                isValid = false;
-                Map<Object, Object> error = new HashMap<>();
-                jsonBody.put(name, error);
-                error.put("error", "required");
-                if (!"password".equals(name)) {
-                    error.put("value", valueObj);
-                }
             }
         }
         return isValid;

@@ -1,26 +1,27 @@
 package frontend;
 
 import base.AccountService;
-import base.ValidatedServlet;
+import base.RequestValidator;
 import base.dataSets.UserDataSet;
 import main.AuthException;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SignInServlet extends ValidatedServlet {
+public class SignInServlet extends HttpServlet {
 
     private static final String[] LOGIN_REQUIRED_FIELDS = {"name", "password",};
+    private static final RequestValidator VALIDATOR = new RequestValidator(LOGIN_REQUIRED_FIELDS);
     private final AccountService accountService;
 
     public SignInServlet(AccountService accountService) {
-        super(SignInServlet.LOGIN_REQUIRED_FIELDS);
         this.accountService = accountService;
     }
 
@@ -37,7 +38,7 @@ public class SignInServlet extends ValidatedServlet {
             jsonBody.put("message", "You're already authorized.");
         } else {
             Map<Object, Object> requestJson = (Map<Object, Object>) JSONValue.parse(request.getReader());
-            if (requestJson != null && this.areRequiredFieldsValid(requestJson, jsonBody)) {
+            if (requestJson != null && SignInServlet.VALIDATOR.areRequiredFieldsValid(requestJson, jsonBody)) {
                 String name = (String) requestJson.get("name");
                 String sid = request.getSession().getId();
                 try {
