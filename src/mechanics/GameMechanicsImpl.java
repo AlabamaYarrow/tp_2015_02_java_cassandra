@@ -78,9 +78,6 @@ public class GameMechanicsImpl implements GameMechanics {
             this.teams.add(team);
         } else {
             this.viewersTeam.add(webSocket);
-            if ( this.getTeamToViewAt() != null) {
-                this.getTeamToViewAt().addListener(webSocket);
-            }
             this.webSocketsToTeams.put(webSocket, this.viewersTeam);
         }
     }

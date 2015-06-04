@@ -40,7 +40,7 @@ public class PlayersTeam extends Team implements Listenable {
             round.put("artist", this.artist.getUserProfile().getHydrated());
         }
         if (recipient != this.cassandra) {
-            round.put("cassandra", this.artist.getUserProfile().getHydrated());
+            round.put("cassandra", this.cassandra.getUserProfile().getHydrated());
             round.put("secret", this.secret);
         }
         if (recipient == this.artist) {
